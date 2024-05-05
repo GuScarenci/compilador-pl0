@@ -1,3 +1,7 @@
+# Compilador de PL-0
+
+## Documentação técnica para rodar o código
+
 # This is a template project for working with multi file C projects in Linux
 
 #### Folder structure
