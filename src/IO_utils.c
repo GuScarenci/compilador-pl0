@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "IOutils.h"
+#include "IO_utils.h"
 
 void fatalError(int line, const char* file, const char* fmt, ...) {
     int ini_errno = errno; // fprintf can change the errno value, so store it
