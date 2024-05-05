@@ -1,7 +1,7 @@
 CC ?= gcc
 ZIP ?= 7za
 PDFLAGS += -march=native
-CFLAGS += -Wall -Wextra -Wpedantic
+CFLAGS += -Wall -Wextra -Wpedantic -std=gnu99
 LDFLAGS += -lm
 VDFLAGS += --leak-check=full --show-leak-kinds=all -s
 
