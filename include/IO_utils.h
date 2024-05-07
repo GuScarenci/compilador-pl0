@@ -38,16 +38,6 @@
 #define ABORT_PROGRAM(...) fatalError(__LINE__, __FILE__, ##__VA_ARGS__);
 
 /*
- * EXIT_ERROR has the same purpose as ABORT_PROGRAM, but it follows the
- * guidelines for this assignment. It has a major drawback, though: it
- * does not give any specific details of the error, only a generic error
- * message.
- */
-#define EXIT_ERROR()                                                           \
-    printf("Falha na execução da funcionalidade.\n");                          \
-    exit(EXIT_SUCCESS);
-
-/*
  * XALLOC allocates memory in the heap in the pointer p,
  * checking if the allocation failed and aborting the program if so
  */
@@ -77,7 +67,7 @@
 #define OPEN_FILE(file_pointer, filename, mode)                                \
     (file_pointer) = fopen((filename), (mode));                                \
     if ((file_pointer) == NULL) {                                              \
-        EXIT_ERROR()                                                           \
+        ABORT_PROGRAM("fopen: unable to open %s", filename);                                                         \
     }
 
 // MEMSET_ALLOC does the same as XALLOC, but it initializes all bytes to chr
