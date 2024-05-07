@@ -4,7 +4,7 @@
 #include "lexer.h"
 #include "IO_utils.h"
 
-extern const char* restrict type_map[] = {
+extern const char const* restrict type_map[] = {
     "identifier", "integer literal", "comment"
 };
 
