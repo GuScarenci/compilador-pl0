@@ -41,5 +41,10 @@ void token_stream_free(TokenStream* tok_stream);
  */
 Token* get_next_token(TokenStream* tok_stream);
 
+/*
+ * Initializes the state machine that will be used to tokenize the input.
+*/
+void initializeStateMachine();
+
 
 #endif
