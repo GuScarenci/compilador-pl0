@@ -10,7 +10,7 @@
  * It fulfills the task of lexical analysis, returning a stream
  * of tokens and their types, and any lexical errors, if they occur.
  */
-typedef FILE* TokenStream;
+typedef FILE TokStream;
 
 /*
  * A token pair is an abstract data type that encapsulates a
@@ -29,17 +29,17 @@ typedef struct token_pair_t {
  * file whose name is the string pointed to by 'source_path'.
  * The tokens are analysed in conformity to PL/0's grammar.
  */
-TokenStream* token_stream_init(const char* restrict source_path);
+TokStream* token_stream_init(const char* restrict source_path);
 
 /*
  * Frees resources utilized by Token Stream.
  */
-void token_stream_free(TokenStream* tok_stream);
+void token_stream_free(TokStream** tok_stream);
 
 /*
  * Returns the next token in the stream.
  */
-Token* get_next_token(TokenStream* tok_stream);
+Token* get_next_token(TokStream* tok_stream);
 
 
 #endif
