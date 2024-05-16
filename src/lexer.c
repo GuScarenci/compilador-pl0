@@ -4,10 +4,6 @@
 #include "lexer.h"
 #include "IO_utils.h"
 
-extern const char const* restrict type_map[] = {
-    "identifier", "integer literal", "comment"
-};
-
 
 TokStream* token_stream_init(const char* restrict source_path) {
     TokStream* tok_stream = NULL;
