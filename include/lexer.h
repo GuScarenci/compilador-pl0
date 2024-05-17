@@ -12,7 +12,6 @@
  */
 typedef FILE TokStream;
 
-
 typedef enum TokenTypes {
     ident = 0,       // Identifier.
     num,             // Integer literals (a.k.a constants).
