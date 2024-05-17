@@ -60,7 +60,7 @@ void loadTransitions(const char* filename, StateMachine* sm) {
     while (fgets(line, sizeof(line), file)) {
         trimNewline(line);
         tokens = split(line, " ", &count);
-        if (count != 3) {
+        if (count != NUM_FIELDS_CSV) {
             ABORT_PROGRAM("Malformed line: %s\n", line);
         }
 

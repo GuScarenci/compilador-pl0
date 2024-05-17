@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #define MAX_LINE_LENGTH 1024
+#define NUM_FIELDS_CSV 3
 
 typedef enum TokenTypes {
     ident = 0,       // Identifier.
