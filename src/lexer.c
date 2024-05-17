@@ -18,12 +18,12 @@ void loadTransitions(const char* filename, StateMachine* sm) {
         readLine(&line, file);
         tokens = split(line, " ", &count);
         if (count != NUM_FIELDS_CSV) {
-            ABORT_PROGRAM("Malformed line: %s\n", line);
+            ABORT_PROGRAM("Malformed line: %s\nDSV must have exactly 3 fields per line, separated by spaces.\n", line);
         }
 
         // Add or update state
         State* state = NULL;
-        for (int i = 0; i < sm->stateCount; i++) {
+        for (size_t i = 0; i < sm->stateCount; i++) {
             if (strcmp(sm->states[i].stateName, tokens[0]) == 0) {
                 state = &sm->states[i];
                 break;
@@ -38,7 +38,7 @@ void loadTransitions(const char* filename, StateMachine* sm) {
             state->transitions = NULL;
             state->transitionCount = 0;
 
-            if (tokens[0][0] == 'O' || tokens[0][0] == 'P'){
+            if (tokens[0][0] == 'F' || tokens[0][0] == 'E') {
                 state->isFinal = 1;
             } else {
                 state->isFinal = 0;
@@ -56,7 +56,7 @@ void loadTransitions(const char* filename, StateMachine* sm) {
 }
 
 State* findStateByName(StateMachine* sm, char* name) {
-    for (int i = 0; i < sm->stateCount; i++) {
+    for (size_t i = 0; i < sm->stateCount; i++) {
         if (strcmp(sm->states[i].stateName, name) == 0) {
             return &sm->states[i];
         }
@@ -66,14 +66,14 @@ State* findStateByName(StateMachine* sm, char* name) {
 }
 
 char* getNextState(State* currentState, char input) {
-    for (int i = 0; i < currentState->transitionCount; i++) {
+    for (size_t i = 0; i < currentState->transitionCount; i++) {
         if ((strcmp(currentState->transitions[i].input, "Digito") == 0 && isDigit(input)) ||
             (strcmp(currentState->transitions[i].input, "Nao-Digito") == 0 && isNonDigit(input)) ||
             (strlen(currentState->transitions[i].input) == 1 && currentState->transitions[i].input[0] == input)) {
             return currentState->transitions[i].nextState;
         }
     }
-    
+
     return NULL;
 }
 
@@ -111,8 +111,8 @@ void initializeStateMachine(StateMachine* sm) {
 }
 
 void freeStateMachine(StateMachine* sm) {
-    for (int i = 0; i < sm->stateCount; i++) {
-        for (int j = 0; j < (sm->states)[i].transitionCount; j++) {
+    for (size_t i = 0; i < sm->stateCount; i++) {
+        for (size_t j = 0; j < (sm->states)[i].transitionCount; j++) {
             free((sm->states)[i].transitions[j].input);
             free((sm->states)[i].transitions[j].nextState);
         }

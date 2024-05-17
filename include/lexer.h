@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <sys/types.h>
 
 #define NUM_FIELDS_CSV 3
 
@@ -44,14 +46,15 @@ typedef struct transition_t {
 
 typedef struct state_t {
     char* stateName;
-    StateTransition *transitions;
-    int transitionCount;
-    int isFinal;
+    StateTransition* transitions;
+    size_t transitionCount;
+    bool isFinal;
+    bool isError;
 } State;
 
 typedef struct state_machine_t {
     State* states;
-    int stateCount;
+    size_t stateCount;
 } StateMachine;
 
 /*
