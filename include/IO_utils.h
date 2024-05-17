@@ -100,11 +100,11 @@
 void fatalError(int line, const char* file, const char* fmt, ...);
 
 /*
- * readFirstLine reads the first line of fp (relative to current position)
+ * readLine reads the first line of fp (relative to current position)
  * and stores it in line. The function deals with memory allocation, do not
  * pass a malloced pointer to it.
  */
-void readFirstLine(char** line, FILE* fp);
+void readLine(char** line, FILE* fp);
 
 /*
  * min takes two ssize_ts and returns the smallest one.

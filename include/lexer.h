@@ -4,13 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-/*
- * Token Stream is an abtract data type that encapsulates
- * a single source file and its stream of token pairs.
- * It fulfills the task of lexical analysis, returning a stream
- * of tokens and their types, and any lexical errors, if they occur.
- */
-typedef FILE TokStream;
+#define MAX_LINE_LENGTH 1024
 
 typedef enum TokenTypes {
     ident = 0,       // Identifier.
@@ -42,6 +36,34 @@ typedef enum TokenTypes {
     invalid_num,     // Found invalid char on otherwise valid integer literal.
     unexp_break      // Found unexpected line break on inline comment.
 } TokenType;
+
+typedef struct transition_t {
+    char* input;
+    char* nextState;
+} StateTransition;
+
+typedef struct state_t {
+    char* stateName;
+    StateTransition *transitions;
+    int transitionCount;
+    int isFinal;
+} State;
+
+typedef struct state_machine_t {
+    State* states;
+    int stateCount;
+} StateMachine;
+
+/*
+ * Token Stream is an abtract data type that encapsulates
+ * a single source file and its stream of token pairs.
+ * It fulfills the task of lexical analysis, returning a stream
+ * of tokens and their types, and any lexical errors, if they occur.
+ */
+typedef struct tok_stream_t {
+    FILE* src_code;
+    StateMachine dfa;
+} TokStream;
 
 
 /*

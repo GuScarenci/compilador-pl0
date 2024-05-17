@@ -5,43 +5,8 @@
 #include "IO_utils.h"
 
 
-TokStream* token_stream_init(const char* restrict source_path) {
-    TokStream* tok_stream = NULL;
-
-    OPEN_FILE(tok_stream, source_path, "r");
-
-    return tok_stream;
-}
-
-void token_stream_free(TokStream** tok_stream) {
-    if (tok_stream != NULL) {
-        fclose(*tok_stream);
-    }
-
-    *tok_stream = NULL;
-}
-
-#define MAX_LINE_LENGTH 1024
-
-typedef struct {
-    char *input;
-    char *nextState;
-} StateTransition;
-
-typedef struct {
-    char *stateName;
-    StateTransition *transitions;
-    int transitionCount;
-    int isFinal;
-} State;
-
-typedef struct {
-    State *states;
-    int stateCount;
-} StateMachine;
-
 // Function to trim newline characters from a string
-char* trimNewline(char *str) {
+char* trimNewline(char* str) {
     char *pos;
     if ((pos = strchr(str, '\n')) != NULL) {
         *pos = '\0';
@@ -53,7 +18,7 @@ char* trimNewline(char *str) {
 }
 
 // Function to split a line into tokens by a delimiter
-char** split(char *line, const char *delimiter, int *count) {
+char** split(char* line, const char* delimiter, int* count) {
     char **tokens = NULL;
     char *token = strtok(line, delimiter);
     int tokensCount = 0;
@@ -79,7 +44,7 @@ int isNonDigit(char c) {
     return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_';
 }
 
-void loadTransitions(const char *filename, StateMachine *sm) {
+void loadTransitions(const char* filename, StateMachine* sm) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         perror("fopen");
@@ -143,7 +108,7 @@ void loadTransitions(const char *filename, StateMachine *sm) {
     fclose(file);
 }
 
-State* findStateByName(StateMachine *sm, char *name) {
+State* findStateByName(StateMachine* sm, char* name) {
     for (int i = 0; i < sm->stateCount; i++) {
         if (strcmp(sm->states[i].stateName, name) == 0) {
             return &sm->states[i];
@@ -152,7 +117,7 @@ State* findStateByName(StateMachine *sm, char *name) {
     return NULL;
 }
 
-char* getNextState(State *currentState, char input) {
+char* getNextState(State* currentState, char input) {
     for (int i = 0; i < currentState->transitionCount; i++) {
         if ((strcmp(currentState->transitions[i].input, "Digito") == 0 && isDigit(input)) ||
             (strcmp(currentState->transitions[i].input, "Nao-Digito") == 0 && isNonDigit(input)) ||
@@ -163,7 +128,7 @@ char* getNextState(State *currentState, char input) {
     return NULL;
 }
 
-void runStateMachine(StateMachine *sm, char *currentStateName, char *inputString) {
+void runStateMachine(StateMachine* sm, char* currentStateName, char* inputString) {
     State *currentState = findStateByName(sm, currentStateName);
     if (currentState == NULL) {
         printf("Invalid initial state\n");
@@ -189,23 +154,43 @@ void runStateMachine(StateMachine *sm, char *currentStateName, char *inputString
     printf("Final State: %s\n", currentState->stateName);
 }
 
-StateMachine sm;
-void initializeStateMachine() {
-    sm.states = NULL;
-    sm.stateCount = 0;
-    loadTransitions("res/transitions.csv", &sm);
+void initializeStateMachine(StateMachine* sm) {
+    sm->states = NULL;
+    sm->stateCount = 0;
+    loadTransitions("res/transitions.csv", sm);
 }
 
-void freeStateMachine() {
-    for (int i = 0; i < sm.stateCount; i++) {
-        for (int j = 0; j < sm.states[i].transitionCount; j++) {
-            free(sm.states[i].transitions[j].input);
-            free(sm.states[i].transitions[j].nextState);
+void freeStateMachine(StateMachine* sm) {
+    for (int i = 0; i < sm->stateCount; i++) {
+        for (int j = 0; j < (sm->states)[i].transitionCount; j++) {
+            free((sm->states)[i].transitions[j].input);
+            free((sm->states)[i].transitions[j].nextState);
         }
-        free(sm.states[i].transitions);
-        free(sm.states[i].stateName);
+
+        free((sm->states)[i].transitions);
+        free((sm->states)[i].stateName);
     }
-    free(sm.states);
+
+    free(sm->states);
+}
+
+TokStream* token_stream_init(const char* restrict source_path) {
+    TokStream* tok_stream = NULL;
+
+    XALLOC(TokStream, tok_stream, 1)
+    OPEN_FILE(tok_stream->src_code, source_path, "r");
+    initializeStateMachine(&(tok_stream->dfa));
+
+    return tok_stream;
+}
+
+void token_stream_free(TokStream** tok_stream) {
+    if (tok_stream != NULL) {
+        fclose((*tok_stream)->src_code);
+    }
+
+    freeStateMachine(&((*tok_stream)->dfa));
+    *tok_stream = NULL;
 }
 
 Token* get_next_token(TokStream* tok_stream) {

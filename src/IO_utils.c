@@ -31,7 +31,7 @@ void fatalError(int line, const char* file, const char* fmt, ...) {
     exit(EXIT_FAILURE);
 }
 
-void readFirstLine(char** line, FILE* fp) {
+void readLine(char** line, FILE* fp) {
     size_t line_len = INIT_LEN;
     size_t char_index = 0;
     XALLOC(char, *line, line_len);
