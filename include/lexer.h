@@ -39,21 +39,28 @@ typedef enum TokenTypes {
     unexp_break      // Found unexpected line break on inline comment.
 } TokenType;
 
+typedef enum state_t {
+    initial = 0,
+    error,
+    final,
+    regular
+}
+
 typedef struct transition_t {
     char* input;
     char* nextState;
 } StateTransition;
 
 typedef struct state_t {
-    char* stateName;
     StateTransition* transitions;
     size_t transitionCount;
-    bool isFinal;
-    bool isError;
+    char* stateName;
+    StateType type;
 } State;
 
 typedef struct state_machine_t {
     State* states;
+    char** token_strs;
     size_t stateCount;
 } StateMachine;
 
