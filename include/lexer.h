@@ -10,7 +10,39 @@
  * It fulfills the task of lexical analysis, returning a stream
  * of tokens and their types, and any lexical errors, if they occur.
  */
-typedef FILE* TokenStream;
+typedef FILE TokStream;
+
+typedef enum TokenTypes {
+    ident = 0,       // Identifier.
+    num,             // Integer literals (a.k.a constants).
+    comment,         // Inline comments.
+    comma,       
+    semicolon,
+    left_par,        // Left parenthesis.
+    right_par,       // Right parenthesis.
+    assign_op,       // Assignment operator, i.e. := 
+    rel_op,          // Relational operators: <>, =, <, <=, => and >.
+    simb_plus,       // Plus sign, i.e. +
+    simb_minus,      // Minus sign, i.e. -
+    simb_mult,       // Multiply sign, i.e. *
+    simb_div,        // Divide sign, i.e. /
+    keyword_const,   // Keywords are case sensitive and all caps.
+    keyword_var,    
+    keyword_proc,    // PROCEDURE keyword
+    keyword_call,   
+    keyword_begin, 
+    keyword_end,    
+    keyword_if,     
+    keyword_then,
+    keyword_while,  
+    keyword_do,
+    keyword_odd,
+    invalid_ident,   // Found invalid char on otherwise valid ident.
+    invalid,         // Found invalid char
+    invalid_num,     // Found invalid char on otherwise valid integer literal.
+    unexp_break      // Found unexpected line break on inline comment.
+} TokenType;
+
 
 /*
  * A token pair is an abstract data type that encapsulates a
@@ -20,7 +52,7 @@ typedef FILE* TokenStream;
  */
 typedef struct token_pair_t {
     char* token_str;
-    uint32_t type;
+    TokenType type;
 } Token;
 
 
@@ -29,17 +61,17 @@ typedef struct token_pair_t {
  * file whose name is the string pointed to by 'source_path'.
  * The tokens are analysed in conformity to PL/0's grammar.
  */
-TokenStream* token_stream_init(const char* restrict source_path);
+TokStream* token_stream_init(const char* restrict source_path);
 
 /*
  * Frees resources utilized by Token Stream.
  */
-void token_stream_free(TokenStream* tok_stream);
+void token_stream_free(TokStream** tok_stream);
 
 /*
  * Returns the next token in the stream.
  */
-Token* get_next_token(TokenStream* tok_stream);
+Token* get_next_token(TokStream* tok_stream);
 
 /*
  * Initializes the state machine that will be used to tokenize the input.

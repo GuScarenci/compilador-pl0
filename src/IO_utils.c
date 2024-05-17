@@ -49,7 +49,9 @@ void readFirstLine(char** line, FILE* fp) {
     (*line)[char_index - 1] = '\0';
 }
 
-ssize_t min(ssize_t a, ssize_t b) { return a * (a <= b) + b * (b < a); }
+ssize_t min(ssize_t a, ssize_t b) { 
+    return a * (a <= b) + b * (b < a); 
+}
 
 void strStrip(char** str_ptr) {
     ssize_t len = strlen(*str_ptr);

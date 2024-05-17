@@ -5,6 +5,6 @@
 
 int main(int argc, char** argv){
     initializeStateMachine();
-    TokenStream* tok_stream = token_stream_init("res/a.pl0");
-    token_stream_free(tok_stream);
+    TokStream* tok_stream = token_stream_init("res/a.pl0");
+    token_stream_free(&tok_stream);
 }
