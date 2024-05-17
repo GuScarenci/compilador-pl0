@@ -2,9 +2,19 @@
 #include <stdlib.h>
 
 #include "lexer.h"
+#include "str_utils.h"
 
 int main(int argc, char** argv){
-    initializeStateMachine();
-    TokStream* tok_stream = token_stream_init("res/a.pl0");
-    token_stream_free(&tok_stream);
+    char a[] = "a,string,separated,by,commas";
+    const char* delim = ",";
+    int size;
+
+    char** words = split(a, delim, &size);
+    printf("Found %d tokens\n", size);
+
+    for (int i = 0; i < size; i++) {
+        printf("Token: %s\n", words[i]);
+    }
+
+    free(words);
 }

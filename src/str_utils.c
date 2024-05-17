@@ -22,16 +22,15 @@ char* trimNewline(char* str) {
 
 
 // Function to split a line into tokens by a delimiter
-char** split(char* line, const char* delimiter, int* count) {
+char** split(const char* line, const char* delimiter, int* count) {
+    char* pos = line;
+    char* token = NULL;
     char** tokens = NULL;
-    char* token = strtok(line, delimiter);
+
     int tokensCount = 0;
-
-    while (token) {
+    while ((token = strtok_r(pos, delimiter, &pos)) != NULL) {
         XREALLOC(char*, tokens, ++tokensCount)
-
         tokens[tokensCount - 1] = token;
-        token = strtok(NULL, delimiter);
     }
 
     *count = tokensCount;

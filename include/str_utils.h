@@ -7,7 +7,7 @@
 char* trimNewline(char* str);
 
 // Function to split a line into tokens by a delimiter
-char** split(char* line, const char* delimiter, int* count);
+char** split(const char* line, const char* delimiter, int* count);
 
 bool isDigit(char c);
 
