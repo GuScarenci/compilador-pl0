@@ -7,31 +7,31 @@
 
 // Function to trim newline characters from a string
 char* trimNewline(char* str) {
-    char *pos;
+    char* pos;
     if ((pos = strchr(str, '\n')) != NULL) {
         *pos = '\0';
     }
+
     if ((pos = strchr(str, '\r')) != NULL) {
         *pos = '\0';
     }
+
     return str;
 }
 
 // Function to split a line into tokens by a delimiter
 char** split(char* line, const char* delimiter, int* count) {
-    char **tokens = NULL;
-    char *token = strtok(line, delimiter);
+    char** tokens = NULL;
+    char* token = strtok(line, delimiter);
     int tokensCount = 0;
 
     while (token) {
-        tokens = realloc(tokens, sizeof(char*) * ++tokensCount);
-        if (tokens == NULL) {
-            perror("realloc");
-            exit(EXIT_FAILURE);
-        }
+        XREALLOC(char*, tokens, ++tokensCount)
+
         tokens[tokensCount - 1] = token;
         token = strtok(NULL, delimiter);
     }
+
     *count = tokensCount;
     return tokens;
 }
@@ -45,28 +45,23 @@ int isNonDigit(char c) {
 }
 
 void loadTransitions(const char* filename, StateMachine* sm) {
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        perror("fopen");
-        exit(EXIT_FAILURE);
-    }
+    FILE* file;
+    OPEN_FILE(file, filename, "r")
 
     char line[MAX_LINE_LENGTH];
-    char **tokens;
+    char** tokens;
     int count;
 
     // Read the header line
     if (fgets(line, sizeof(line), file) == NULL) {
-        perror("fgets");
-        exit(EXIT_FAILURE);
+        ABORT_PROGRAM("fgets")
     }
 
     while (fgets(line, sizeof(line), file)) {
         trimNewline(line);
         tokens = split(line, " ", &count);
         if (count != 3) {
-            fprintf(stderr, "Malformed line: %s\n", line);
-            exit(EXIT_FAILURE);
+            ABORT_PROGRAM("Malformed line: %s\n", line);
         }
 
         // Add or update state
@@ -79,11 +74,8 @@ void loadTransitions(const char* filename, StateMachine* sm) {
         }
 
         if (state == NULL) {
-            sm->states = realloc(sm->states, sizeof(State) * ++sm->stateCount);
-            if (sm->states == NULL) {
-                perror("realloc");
-                exit(EXIT_FAILURE);
-            }
+            XREALLOC(State, sm->states, ++sm->stateCount)
+
             state = &sm->states[sm->stateCount - 1];
             state->stateName = strdup(tokens[0]);
             state->transitions = NULL;
@@ -96,11 +88,7 @@ void loadTransitions(const char* filename, StateMachine* sm) {
             }
         }
 
-        state->transitions = realloc(state->transitions, sizeof(StateTransition) * ++state->transitionCount);
-        if (state->transitions == NULL) {
-            perror("realloc");
-            exit(EXIT_FAILURE);
-        }
+        XREALLOC(StateTransition, state->transitions, ++state->transitionCount)
         state->transitions[state->transitionCount - 1].input = strdup(tokens[1]);
         state->transitions[state->transitionCount - 1].nextState = strdup(tokens[2]);
     }
@@ -129,7 +117,7 @@ char* getNextState(State* currentState, char input) {
 }
 
 void runStateMachine(StateMachine* sm, char* currentStateName, char* inputString) {
-    State *currentState = findStateByName(sm, currentStateName);
+    State* currentState = findStateByName(sm, currentStateName);
     if (currentState == NULL) {
         printf("Invalid initial state\n");
         return;
@@ -138,7 +126,8 @@ void runStateMachine(StateMachine* sm, char* currentStateName, char* inputString
     int inputLength = strlen(inputString);
     for (int i = 0; i < inputLength; i++) {
         printf("Current State: %s, Input: %c\n", currentState->stateName, inputString[i]);
-        char *nextStateName = getNextState(currentState, inputString[i]);
+        char* nextStateName = getNextState(currentState, inputString[i]);
+
         if (nextStateName == NULL) {
             printf("Invalid input '%c' from state '%s'\n", inputString[i], currentState->stateName);
             return;
