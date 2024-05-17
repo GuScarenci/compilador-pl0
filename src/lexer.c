@@ -18,7 +18,9 @@ void loadTransitions(const char* filename, StateMachine* sm) {
         readLine(&line, file);
         tokens = split(line, " ", &count);
         if (count != NUM_FIELDS_CSV) {
-            ABORT_PROGRAM("Malformed line: %s\nDSV must have exactly 3 fields per line, separated by spaces.\n", line);
+            ABORT_PROGRAM("Malformed line: %s\n"
+                          "DSV must have exactly 3 fields per line,"
+                          " separated by spaces", line);
         }
 
         // Add or update state

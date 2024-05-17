@@ -43,5 +43,17 @@ bool isDigit(char c) {
 }
 
 bool isNonDigit(char c) {
-    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_';
+    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || isSymbol(c);
+}
+
+bool isLetter(char c) {
+    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+}
+
+bool isSymbol(char c) {
+    return ('(' <= c && c <= '/') || (':' <= c && c <= '>');
+}
+
+bool isWhitespace(char c) {
+    return ('\t' <= c && c <= CARRIAGE_RETURN) || (c == ' '); 
 }
