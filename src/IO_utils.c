@@ -44,7 +44,8 @@ void readLine(char** line, FILE* fp) {
 
         (*line)[char_index] = fgetc(fp);
         char_index++;
-    } while (!feof(fp) && (*line)[char_index - 1] != '\n');
+    } while (!feof(fp) && (*line)[char_index - 1] != '\n'
+                       && (*line)[char_index - 1] != '\r');
 
     (*line)[char_index - 1] = '\0';
 }

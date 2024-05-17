@@ -10,24 +10,19 @@ void loadTransitions(const char* filename, StateMachine* sm) {
     FILE* file;
     OPEN_FILE(file, filename, "r")
 
-    char line[MAX_LINE_LENGTH];
+    char* line;
     char** tokens;
     int count;
 
-    // Read the header line
-    if (fgets(line, sizeof(line), file) == NULL) {
-        ABORT_PROGRAM("fgets")
-    }
-
-    while (fgets(line, sizeof(line), file)) {
-        trimNewline(line);
+    do {
+        readLine(&line, file);
         tokens = split(line, " ", &count);
         if (count != NUM_FIELDS_CSV) {
             ABORT_PROGRAM("Malformed line: %s\n", line);
         }
 
         // Add or update state
-        State *state = NULL;
+        State* state = NULL;
         for (int i = 0; i < sm->stateCount; i++) {
             if (strcmp(sm->states[i].stateName, tokens[0]) == 0) {
                 state = &sm->states[i];
@@ -53,7 +48,9 @@ void loadTransitions(const char* filename, StateMachine* sm) {
         XREALLOC(StateTransition, state->transitions, ++state->transitionCount)
         state->transitions[state->transitionCount - 1].input = strdup(tokens[1]);
         state->transitions[state->transitionCount - 1].nextState = strdup(tokens[2]);
-    }
+
+        free(line);
+    } while (!feof(file));
 
     fclose(file);
 }
@@ -64,6 +61,7 @@ State* findStateByName(StateMachine* sm, char* name) {
             return &sm->states[i];
         }
     }
+
     return NULL;
 }
 
@@ -75,6 +73,7 @@ char* getNextState(State* currentState, char input) {
             return currentState->transitions[i].nextState;
         }
     }
+    
     return NULL;
 }
 
