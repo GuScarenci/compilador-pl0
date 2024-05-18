@@ -21,7 +21,7 @@ size_t hash_map(char* key, size_t hash_size) {
     return index%hash_size;
 }
 
-void insertState(StateMachine* sm, State* state) {
+void insertState(const StateMachine* sm, State* state) {
     size_t index = hash_map(state->stateName, sm->hash_size);
 
     // Linear probing for collision resolution
@@ -33,7 +33,7 @@ void insertState(StateMachine* sm, State* state) {
     sm->stateCount++;
 }
 
-State* getState(StateMachine* sm, char* key) {
+State* getState(const StateMachine* sm, char* key) {
     size_t index = hash_map(key, sm->hash_size);
 
     // Linear probing for collision resolution
@@ -48,7 +48,7 @@ State* getState(StateMachine* sm, char* key) {
     return NULL; // Not found
 }
 
-void resize_hash(StateMachine* sm) {
+void resize_hash(const StateMachine* sm) {
     size_t new_hash_size = sm->hash_size*HASH_GROWTH_FACTOR;
     State* new_states_hash;
     XCALLOC(State, new_states_hash, new_hash_size)
@@ -125,12 +125,12 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
     OPEN_FILE(file, filename, "r")
 
     char* line;
-    char** tokens;
+    char** fields;
     int count;
 
     do {
         readLine(&line, file);
-        tokens = split(line, "|", &count);
+        fields = split(line, "|", &count);
         if (count != NUM_FIELDS_CSV) {
             ABORT_PROGRAM("Malformed line: %s\n"
                           "DSV must have exactly 3 fields per line,"
@@ -138,14 +138,7 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
         }
 
         // Add or update state
-        State* state = NULL;
-        for (size_t i = 0; i < sm->stateCount; i++) {
-            if (strcmp(sm->states_hash[i].stateName, tokens[0]) == 0) {
-                state = &sm->states_hash[i];
-                break;
-            }
-        }
-
+        State* state = getState(sm, fields[2]);
         XREALLOC(StateTransition, state->transitions, ++state->transitionCount)
         state->transitions[state->transitionCount - 1].input = strdup(tokens[1]);
         state->transitions[state->transitionCount - 1].nextState = strdup(tokens[2]);
