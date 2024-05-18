@@ -76,18 +76,8 @@ void loadStates(const char* restrict filename, StateMachine* sm);
 void loadTransitions(const char* restrict filename, StateMachine* sm);
 
 /*
- * Finds a state by name.
- */
-State* findStateByName(StateMachine* sm, char* name);
-
-/*
  * Gets the next state based on the current state and input.
  */
 char* getNextState(State* currentState, char input);
-
-/*
- * Runs the state machine with the given initial state and input string.
- */
-void runStateMachine(StateMachine* sm, char* currentStateName, char* inputString);
 
 #endif
