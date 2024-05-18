@@ -4,10 +4,12 @@
 #include "lexer.h"
 #include "str_utils.h"
 
-int main(int argc, char** argv){
+int main(void){
     char a[] = "a,string,separated,by,commas";
     const char* delim = ",";
     int size;
+
+    token_stream_init("res/a.pl0");
 
     char** words = split(a, delim, &size);
     printf("Found %d tokens\n", size);
