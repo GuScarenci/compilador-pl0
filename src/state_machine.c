@@ -120,7 +120,6 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
     }
 }
 
-
 void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO IMPLEMENT
     FILE* file;
     OPEN_FILE(file, filename, "r")
@@ -158,15 +157,27 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
 }
 
 char* getNextState(State* currentState, char input) { //TODO IMPLEMENT
+for (size_t i = 0; i < currentState->transitionCount; i++) {
+        StateTransition* transition = &currentState->transitions[i];
+
+        if ((strcmp(transition->input, "Digito") == 0 && isDigit(input)) ||
+            (strcmp(transition->input, "Nao-Digito") == 0 && isNonDigit(input)) ||
+            (strcmp(transition->input, "Simbolo") == 0 && isSymbol(input)) ||
+            (strcmp(transition->input, "Letra") == 0 && isLetter(input)) ||
+            (strcmp(transition->input, "Espaco") == 0 && isWhitespace(input)) ||
+            (strlen(transition->input) == 1 && transition->input[0] == input)) {
+            return transition->nextState;
+        }
+    }
+
+    // If no matching transition is found, check for "Outro"
     for (size_t i = 0; i < currentState->transitionCount; i++) {
-        if ((strcmp(currentState->transitions[i].input, "Digito") == 0 && isDigit(input)) ||
-            (strcmp(currentState->transitions[i].input, "Nao-Digito") == 0 && isNonDigit(input)) ||
-            (strlen(currentState->transitions[i].input) == 1 && currentState->transitions[i].input[0] == input)) {
+        if (strcmp(currentState->transitions[i].input, "Outro") == 0) {
             return currentState->transitions[i].nextState;
         }
     }
 
-    return NULL;
+    return NULL; // No valid transition found
 }
 
 void init_hash(StateMachine* sm) {
