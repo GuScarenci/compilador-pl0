@@ -144,7 +144,7 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
         }
 
         // Add or update state
-        State* state = getState(sm, fields[2]);
+        State* state = getState(sm, fields[0]);
         XREALLOC(StateTransition, state->transitions, ++state->transitionCount)
         state->transitions[state->transitionCount - 1].input = strdup(fields[1]);
         state->transitions[state->transitionCount - 1].nextState = strdup(fields[2]);
@@ -191,11 +191,6 @@ void initializeStateMachine(StateMachine* sm) {
     init_hash(sm);
     loadStates(states_file, sm);
     loadTransitions(transitions_file, sm);
-
-    State *initial_state = getState(sm, "Q0");
-    char *next_state = getNextState(initial_state, '=');
-    State *next = getState(sm, next_state);
-    printf("Next state: %s\n", next->stateName);
 }
 
 void freeStateMachine(StateMachine* sm) {
