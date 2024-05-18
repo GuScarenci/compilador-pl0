@@ -4,6 +4,10 @@ Q1|3
 E1|1|Found invalid character or ident. Use only letters and digits for identifiers.
 E2|1|Invalid character
 E3|1|Ident beggining with digital or invalid integer literal. Did you mean to write a number?
+E4|1|Unexpected line break. Comments must be inline. Did you mean to close your comment with '}' before skipping to the next line?
+E5|1|Colons are exclusively used for the assignment operator :=. Did you mean to write := ?
+E6|1|Angular brackets are used solely for relational operators. Did you mean to write <, >, <= or >= ?
+E7|1|Angular brackets are used solely for relational operators. Did you mean to write <, >, <= or >= ?
 Q2|3
 Q3|3
 Q4|3
@@ -20,12 +24,8 @@ O8|2|period
 O9|2|simb_div
 O10|2|rel_op
 O11|2|assign_op
-O12|1|Colons are exclusively used for the assignment operator :=. Did you mean to write := ?
+O12|2|rel_op
 O13|2|integer literal
 O14|2|rel_op
 O15|2|rel_op
-O16|1|Angular brackets are used solely for relational operators. Did you mean to write <, >, <= or >= ?
-O17|2|rel_op
-O18|1|Angular brackets are used solely for relational operators. Did you mean to write <, >, <= or >= ?
-O19|2|comment
-E4|1|Unexpected line break. Comments must be inline. Did you mean to close your comment with '}' before skipping to the next line?
+O16|2|comment
