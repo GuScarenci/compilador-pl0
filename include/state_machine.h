@@ -32,6 +32,7 @@ typedef struct state_t {
     size_t transitionCount;
     char* stateName;
     StateType type;
+    char* output;
 } State;
 
 typedef struct state_machine_t {

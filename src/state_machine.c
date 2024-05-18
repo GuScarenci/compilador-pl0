@@ -97,19 +97,26 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
 
         StateType cur_type = atoi(fields[1]);
         State new_state;
-        new_state->type = cur_type;
-        new_state->transitions = NULL;
-        new_state->transitionCount = 0;
+        new_state.type = cur_type;
+        new_state.transitions = NULL;
+        new_state.transitionCount = 0;
+        new_state.output = NULL;
         
         if (STATE_HAS_EMPTY_OUTPUT(cur_type)) {
-
+            new_state.stateName = strdup(fields[0]);
+            insertState(sm, &new_state);
         } else if (STATE_HAS_NON_EMPTY_OUTPUT(cur_type)) {
-
+            new_state.stateName = strdup(fields[0]);
+            new_state.output = strdup(fields[2]);
+            insertState(sm, &new_state);
         } else {
             ABORT_PROGRAM("Malformed line on %s: %s\n"
                           "the second field must be a mapped state type, "
                           "a number from 0 to 3", filename, line)
         }
+
+        free(line);
+        free(fields);
     }
 }
 
