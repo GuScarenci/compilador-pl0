@@ -74,7 +74,7 @@ void resize_hash(StateMachine* sm) {
     sm->hash_size = new_hash_size;
 }
 
-void loadStates(const char* restrict filename, StateMachine* sm) {
+void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEMENT
     FILE* file;
     OPEN_FILE(file, filename, "r")
 
@@ -110,7 +110,7 @@ void loadStates(const char* restrict filename, StateMachine* sm) {
 }
 
 
-void loadTransitions(const char* restrict filename, StateMachine* sm) {
+void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO IMPLEMENT
     FILE* file;
     OPEN_FILE(file, filename, "r")
 
@@ -146,17 +146,7 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) {
     fclose(file);
 }
 
-State* findStateByName(StateMachine* sm, char* name) {
-    for (size_t i = 0; i < sm->stateCount; i++) {
-        if (strcmp(sm->states_hash[i].stateName, name) == 0) {
-            return &sm->states_hash[i];
-        }
-    }
-
-    return NULL;
-}
-
-char* getNextState(State* currentState, char input) {
+char* getNextState(State* currentState, char input) { //TODO IMPLEMENT
     for (size_t i = 0; i < currentState->transitionCount; i++) {
         if ((strcmp(currentState->transitions[i].input, "Digito") == 0 && isDigit(input)) ||
             (strcmp(currentState->transitions[i].input, "Nao-Digito") == 0 && isNonDigit(input)) ||
@@ -166,33 +156,6 @@ char* getNextState(State* currentState, char input) {
     }
 
     return NULL;
-}
-
-void runStateMachine(StateMachine* sm, char* currentStateName, char* inputString) {
-    State* currentState = findStateByName(sm, currentStateName);
-    if (currentState == NULL) {
-        printf("Invalid initial state\n");
-        return;
-    }
-
-    int inputLength = strlen(inputString);
-    for (int i = 0; i < inputLength; i++) {
-        printf("Current State: %s, Input: %c\n", currentState->stateName, inputString[i]);
-        char* nextStateName = getNextState(currentState, inputString[i]);
-
-        if (nextStateName == NULL) {
-            printf("Invalid input '%c' from state '%s'\n", inputString[i], currentState->stateName);
-            return;
-        }
-
-        currentState = findStateByName(sm, nextStateName);
-        if (currentState == NULL) {
-            printf("Next state '%s' not found\n", nextStateName);
-            return;
-        }
-    }
-
-    printf("Final State: %s\n", currentState->stateName);
 }
 
 void init_hash(StateMachine* sm) {
