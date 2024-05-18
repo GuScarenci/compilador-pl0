@@ -134,7 +134,7 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
     }
     free(line);
 
-    do {
+    while (!feof(file)) {
         readLine(&line, file);
         fields = split(line, "|", &count);
         if (count != NUM_FIELDS_CSV) {
@@ -150,7 +150,7 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
         state->transitions[state->transitionCount - 1].nextState = strdup(fields[2]);
 
         free(line);
-    } while (!feof(file));
+    }
 
     fclose(file);
 }
