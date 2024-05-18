@@ -7,7 +7,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#define NUM_FIELDS_CSV 3
+#define NUM_FIELDS_TRANSITION_CSV 4
+#define GO_RIGHT 1
+#define GO_LEFT -1
+
 #define HASH_GROWTH_FACTOR 2
 #define PRIME 37
 #define INIT_TABLE_SIZE 256
@@ -25,6 +28,7 @@ typedef enum state_type {
 typedef struct transition_t {
     char* input;
     char* nextState;
+    int8_t shift;
 } StateTransition;
 
 typedef struct state_t {
@@ -35,7 +39,7 @@ typedef struct state_t {
     char* output;
 } State;
 
-typedef struct state_machine_t {
+typedef struct two_way_moore_machine_t {
     State* states_hash;
     size_t stateCount;
     size_t hash_size;

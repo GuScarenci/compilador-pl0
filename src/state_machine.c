@@ -3,7 +3,7 @@
 #include "str_utils.h"
 
 static const char* restrict first_line_state_dsv = "Name|Type|Output";
-static const char* restrict first_line_transitions_dsv = "CurrentState|Input|NextState";
+static const char* restrict first_line_transitions_dsv = "CurrentState|Input|NextState|Direction";
 
 static const char* restrict states_file = "res/state_map.csv";
 static const char* restrict transitions_file = "res/transitions.csv";
@@ -80,7 +80,8 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
     char* line;
     readLine(&line, file);
     if (strcmp(line, first_line_state_dsv) != 0) {
-        ABORT_PROGRAM("State DSV %s has no header. The first line must be \"Name|Type|Output\".", filename)
+        ABORT_PROGRAM("State DSV %s has no header. The first line must be \"%s\".", 
+                      filename, first_line_state_dsv)
     }
 
     free(line);
@@ -130,17 +131,18 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
 
     readLine(&line, file);
     if (strcmp(line, first_line_transitions_dsv) != 0) {
-        ABORT_PROGRAM("Transitions DSV %s has no header. The first line must be \"CurrentState|Input|NextState\".", filename)
+        ABORT_PROGRAM("Transitions DSV %s has no header. The first line must be \"%s\".", 
+                      filename, first_line_transitions_dsv)
     }
     free(line);
 
     while (!feof(file)) {
         readLine(&line, file);
         fields = split(line, "|", &count);
-        if (count != NUM_FIELDS_CSV) {
-            ABORT_PROGRAM("Malformed line: %s\n"
-                          "DSV must have exactly 3 fields per line,"
-                          " separated by spaces", line);
+        if (count != NUM_FIELDS_TRANSITION_CSV) {
+            ABORT_PROGRAM("Ill-formed line: %s\n"
+                          "DSV must have exactly %d fields per line,"
+                          " separated by spaces", line, NUM_FIELDS_TRANSITION_CSV);
         }
 
         // Add or update state
@@ -148,6 +150,15 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
         XREALLOC(StateTransition, state->transitions, ++state->transitionCount)
         state->transitions[state->transitionCount - 1].input = strdup(fields[1]);
         state->transitions[state->transitionCount - 1].nextState = strdup(fields[2]);
+
+        if (strcmp(fields[3], "R") == 0) {
+            state->transitions[state->transitionCount - 1].shift = GO_RIGHT;
+        } else if (strcmp(fields[3], "L") == 0) {
+            state->transitions[state->transitionCount - 1].shift = GO_LEFT;
+        } else {
+            ABORT_PROGRAM("Ill-formed line: %s\nLast field must be \"R\" or \"L\": "
+                          "whether the head moves left or right on the tape")
+        }
 
         free(line);
     }
