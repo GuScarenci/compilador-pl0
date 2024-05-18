@@ -1,5 +1,5 @@
 CurrentState|Input|NextState
-Q0|\l|Q1
+Q0|Letra|Q1
 Q0|:|Q2
 Q0|Digito|Q3
 Q0|<|Q4
@@ -19,9 +19,8 @@ Q0|=|O11
 Q0|Outro|E2
 Q1|Digito|Q1
 Q1|Nao-Digito|Q1
-Q1|Outro|O0
-Q2|=|E5
-Q2|Outro|P1
+Q2|=|O11
+Q2|Outro|E5
 Q3|Digito|Q3
 Q3|Outro|O13
 Q4|=|O14
