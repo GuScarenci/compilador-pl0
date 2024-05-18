@@ -2,7 +2,6 @@
 #include "IO_utils.h"
 #include "str_utils.h"
 
-
 static const char* restrict first_line_state_dsv = "Name|Type|Output";
 static const char* restrict first_line_transitions_dsv = "CurrentState|Input|NextState";
 
@@ -97,6 +96,11 @@ void loadStates(const char* restrict filename, StateMachine* sm) {
         }
 
         StateType cur_type = atoi(fields[1]);
+        State new_state;
+        new_state->type = cur_type;
+        new_state->transitions = NULL;
+        new_state->transitionCount = 0;
+        
         if (STATE_HAS_EMPTY_OUTPUT(cur_type)) {
 
         } else if (STATE_HAS_NON_EMPTY_OUTPUT(cur_type)) {
