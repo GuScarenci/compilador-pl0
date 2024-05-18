@@ -164,6 +164,7 @@ for (size_t i = 0; i < currentState->transitionCount; i++) {
             (strcmp(transition->input, "Simbolo") == 0 && isSymbol(input)) ||
             (strcmp(transition->input, "Letra") == 0 && isLetter(input)) ||
             (strcmp(transition->input, "Espaco") == 0 && isWhitespace(input)) ||
+            (strcmp(transition->input, "Quebra de linha") == 0 && isWhitespace(input)) ||
             (strlen(transition->input) == 1 && transition->input[0] == input)) {
             return transition->nextState;
         }
