@@ -119,6 +119,8 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
         free(line);
         free(fields);
     }
+
+    fclose(file);
 }
 
 void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO IMPLEMENT
@@ -161,6 +163,7 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
         }
 
         free(line);
+        free(fields);
     }
 
     fclose(file);
@@ -206,7 +209,7 @@ void initializeStateMachine(StateMachine* sm) {
 }
 
 void freeStateMachine(StateMachine* sm) {
-    for (size_t i = 0; i < sm->stateCount; i++) {
+    for (size_t i = 0; i < sm->hash_size; i++) {
         for (size_t j = 0; j < (sm->states_hash)[i].transitionCount; j++) {
             free((sm->states_hash)[i].transitions[j].input);
             free((sm->states_hash)[i].transitions[j].nextState);
@@ -214,6 +217,7 @@ void freeStateMachine(StateMachine* sm) {
 
         free((sm->states_hash)[i].transitions);
         free((sm->states_hash)[i].stateName);
+        free((sm->states_hash)[i].output);
     }
 
     free(sm->states_hash);

@@ -22,6 +22,8 @@ void token_stream_free(TokStream** tok_stream) {
     }
 
     freeStateMachine(&((*tok_stream)->dfa));
+    free(*tok_stream);
+    
     *tok_stream = NULL;
 }
 
