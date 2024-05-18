@@ -21,7 +21,7 @@ size_t hash_map(char* key, size_t hash_size) {
     return index%hash_size;
 }
 
-void insertState(const StateMachine* sm, State* state) {
+void insertState(StateMachine* sm, State* state) {
     size_t index = hash_map(state->stateName, sm->hash_size);
 
     // Linear probing for collision resolution
@@ -33,7 +33,7 @@ void insertState(const StateMachine* sm, State* state) {
     sm->stateCount++;
 }
 
-State* getState(const StateMachine* sm, char* key) {
+State* getState(StateMachine* sm, char* key) {
     size_t index = hash_map(key, sm->hash_size);
 
     // Linear probing for collision resolution
@@ -48,7 +48,7 @@ State* getState(const StateMachine* sm, char* key) {
     return NULL; // Not found
 }
 
-void resize_hash(const StateMachine* sm) {
+void resize_hash(StateMachine* sm) {
     size_t new_hash_size = sm->hash_size*HASH_GROWTH_FACTOR;
     State* new_states_hash;
     XCALLOC(State, new_states_hash, new_hash_size)
@@ -128,6 +128,12 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
     char** fields;
     int count;
 
+    readLine(&line, file);
+    if (strcmp(line, first_line_transitions_dsv) != 0) {
+        ABORT_PROGRAM("Transitions DSV %s has no header. The first line must be \"CurrentState|Input|NextState\".", filename)
+    }
+    free(line);
+
     do {
         readLine(&line, file);
         fields = split(line, "|", &count);
@@ -140,8 +146,8 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
         // Add or update state
         State* state = getState(sm, fields[2]);
         XREALLOC(StateTransition, state->transitions, ++state->transitionCount)
-        state->transitions[state->transitionCount - 1].input = strdup(tokens[1]);
-        state->transitions[state->transitionCount - 1].nextState = strdup(tokens[2]);
+        state->transitions[state->transitionCount - 1].input = strdup(fields[1]);
+        state->transitions[state->transitionCount - 1].nextState = strdup(fields[2]);
 
         free(line);
     } while (!feof(file));
@@ -185,6 +191,11 @@ void initializeStateMachine(StateMachine* sm) {
     init_hash(sm);
     loadStates(states_file, sm);
     loadTransitions(transitions_file, sm);
+
+    State *initial_state = getState(sm, "Q0");
+    char *next_state = getNextState(initial_state, '=');
+    State *next = getState(sm, next_state);
+    printf("Next state: %s\n", next->stateName);
 }
 
 void freeStateMachine(StateMachine* sm) {
