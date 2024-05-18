@@ -96,6 +96,11 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
         }
 
         StateType cur_type = atoi(fields[1]);
+        State new_state;
+        new_state->type = cur_type;
+        new_state->transitions = NULL;
+        new_state->transitionCount = 0;
+        
         if (STATE_HAS_EMPTY_OUTPUT(cur_type)) {
 
         } else if (STATE_HAS_NON_EMPTY_OUTPUT(cur_type)) {
