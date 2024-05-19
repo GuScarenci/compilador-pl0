@@ -9,6 +9,7 @@
 
 #define INIT_TOKEN_LEN 16
 #define TOKEN_GROWTH_FACTOR 2
+#define NUM_FIELDS_KEYWORDS_DSV 2
 
 /*
  * A keyword pair is an abstract data type that encapsulates a

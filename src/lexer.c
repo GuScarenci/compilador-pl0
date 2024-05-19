@@ -25,10 +25,10 @@ void loadKeywords(const char* restrict filename, TokStream *tok_stream) {
         readLine(&line, file);
         size_t num_fields;
         char** fields = split(line, "|", &num_fields);
-        if (num_fields != 2) {
+        if (num_fields != NUM_FIELDS_KEYWORDS_DSV) {
             ABORT_PROGRAM("Malformed line on %s: %s\n"
-                          "DSV must have 2 fields per line.", 
-                          filename, line)
+                          "DSV must have %d fields per line.", 
+                          filename, line, NUM_FIELDS_KEYWORDS_DSV)
         }
 
         XREALLOC(Keyword, tok_stream->keywords, tok_stream->num_keywords + 1)
@@ -72,7 +72,8 @@ Token* get_next_token(TokStream* tok_stream) {
     XALLOC(char, token->token_str, token_buff_len)
 
     StateTransition* transition;
-    while ((tok_stream->dfa.current_state)->type != reeturn) {
+    while (((tok_stream->dfa.current_state)->type != reeturn) &&
+           ((tok_stream->dfa.current_state)->type != error)) {
         char next_char = fgetc(tok_stream->src_code);
         if (feof(tok_stream->src_code)) {
             free(token->token_str);
