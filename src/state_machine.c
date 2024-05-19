@@ -196,7 +196,7 @@ StateTransition* getNextState(State* currentState, char input) { //TODO IMPLEMEN
 
     // If no matching transition is found, check for "Outro"
     for (size_t i = 0; i < currentState->transitionCount; i++) {
-        if (strcmp(currentState->transitions[i].input, "Outro") == 0) {
+        if (strcmp(currentState->transitions[i].input, "outro") == 0) {
             return &(currentState->transitions[i]);
         }
     }
