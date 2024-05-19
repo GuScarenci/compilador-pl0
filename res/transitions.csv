@@ -30,7 +30,10 @@ Q2|outro|E5|B
 Q3|branco|O13|B
 Q3|simbolo|O13|B
 Q3|digito|Q3|F
-Q3|letra|E3|B
+Q3|letra|P1|B
+P1|branco|E3|F
+P1|simbolo|E3|B
+P1|outro|P1|F
 Q4|=|O10|F
 Q4|<|015|F
 Q4|letra|018|B
