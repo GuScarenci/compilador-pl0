@@ -23,6 +23,7 @@ O16|2|comment
 P0|3
 P1|3
 P2|3
+P3|3
 P4|3
 E1|1|Found invalid character or ident. Use only letters and digits for identifiers.
 E2|1|Invalid character
@@ -30,3 +31,4 @@ E3|1|Ident beggining with digital or invalid integer literal. Did you mean to wr
 E4|1|Unexpected line break. Comments must be inline. Did you mean to close your comment with '}' before skipping to the next line?
 E5|1|Colons are exclusively used for the assignment operator :=. Did you mean to write := ?
 E6|1|Angular brackets are used solely for relational operators. Did you mean to write <, >, <= or >= ?
+E7|1|
