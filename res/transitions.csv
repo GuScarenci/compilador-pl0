@@ -1,4 +1,5 @@
 CurrentState|Input|NextState|Direction
+Q0|branco|Q0|F
 Q0|,|O1|F
 Q0|;|O2|F
 Q0|(|O3|F
@@ -18,12 +19,12 @@ Q0|{|Q6|F
 Q0|outro|E2|R
 Q1|letra|Q1|F
 Q1|digito|Q1|F
-Q1|branco|O0|F
+Q1|branco|O0|R
 Q1|simbolo|O0|R
 Q1|outro|E1|R
 Q2|=|011|F
 Q2|outro|E5|R
-Q3|branco|O13|F
+Q3|branco|O13|R
 Q3|simbolo|O13|R
 Q3|letra|E3|R
 Q4|=|O14|F
@@ -31,13 +32,13 @@ Q4|<|015|F
 Q4|letra|018|R
 Q4|simbolo|O18|R
 Q4|digito|018|R
-Q4|branco|O18|F
+Q4|branco|O18|R
 Q4|outro|E6|R
 Q5|=|012|F
 Q5|letra|017|R
 Q5|simbolo|O17|R
 Q5|digito|017|R
-Q5|branco|O17|F
+Q5|branco|O17|R
 Q5|outro|E7|R
 Q6|outro|Q6|F
 Q6|}|O16|F
