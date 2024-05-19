@@ -53,7 +53,7 @@ Token* get_next_token(TokStream* tok_stream) {
 
         (tok_stream->dfa).current_state = getState(&tok_stream->dfa, transition->nextState);
         if (tok_stream->dfa.current_state->type == error) {
-            fprintf(stderr, tok_stream->dfa.current_state->output);
+            fprintf(stderr, "%s", tok_stream->dfa.current_state->output);
         }
 
         if (transition->shift == GO_BACK) {

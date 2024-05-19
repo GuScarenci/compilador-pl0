@@ -23,7 +23,7 @@ char* trimNewline(char* str) {
 
 // Function to split a line into tokens by a delimiter
 char** split(const char* line, const char* delimiter, int* count) {
-    char* pos = line;
+    char* pos = strdup(line);
     char* token = NULL;
     char** tokens = NULL;
 

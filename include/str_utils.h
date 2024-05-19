@@ -41,4 +41,9 @@ bool isLetter(char c);
  */
 bool isWhitespace(char c);
 
+/*
+ * This function returns if a character is a newline. 
+*/
+bool isNewline(char c);
+
 #endif
