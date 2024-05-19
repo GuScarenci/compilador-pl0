@@ -37,5 +37,5 @@ $(EXECUTABLE): $(CFILES)
 	@mkdir -p build
 	$(CC) $(CFLAGS) $(INC_PARAMS) -o $@ $^ $(LDFLAGS) $(PDFLAGS)
 
-valgrind: $(EXECUTABLE)
+valgrind: debug
 	valgrind $(VDFLAGS) ./$(EXECUTABLE)
