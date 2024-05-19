@@ -1,10 +1,10 @@
 # Compilador de PL-0
 Esse projeto foi feito para a disciplina SCC0605 - Teoria da Computação e Compiladores. Os integrantes do grupo são:
-- Artur Brenner Weber - 12675451
-- Gabriel Franceschi Libardi - 11760739
-- Guilherme Castanon Silva Pereira - 11801140
-- Gustavo Moura Scarenci de Carvalho Ferreira - 12547792
-- Matheus Henrique Dias Cirillo - 12547750
+- Artur Brenner Weber. NUSP: 12675451.
+- Gabriel Franceschi Libardi. NUSP: 11760739.
+- Guilherme Castanon Silva Pereira. NUSP: 11801140.
+- Gustavo Moura Scarenci de Carvalho Ferreira. NUSP: 12547792.
+- Matheus Henrique Dias Cirillo. NUSP: 12547750.
 
 Por enquanto, apenas o analisador léxico (a primeira etapa do compilador) está implementada.
 ## Como Compilar e Executar
