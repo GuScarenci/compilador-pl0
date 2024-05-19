@@ -38,4 +38,4 @@ $(EXECUTABLE): $(CFILES)
 	$(CC) $(CFLAGS) $(INC_PARAMS) -o $@ $^ $(LDFLAGS) $(PDFLAGS)
 
 valgrind: debug
-	valgrind $(VDFLAGS) ./$(EXECUTABLE)
+	valgrind $(VDFLAGS) ./$(EXECUTABLE) $(ARGS)
