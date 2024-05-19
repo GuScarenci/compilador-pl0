@@ -20,11 +20,11 @@ em que <source_file> é o caminho para o código fonte (que é um arquivo de tex
 
 ## #TODO List
 - [x] Analisador Léxico.
-- [  ] Analisador Sintático.
-- [  ] Analisador Semântico.
-- [  ] Gerador de IR.
-- [  ] Otimizador de código.
-- [  ] Gerador de código de máquina.
+- [ ] Analisador Sintático.
+- [ ] Analisador Semântico.
+- [ ] Gerador de IR.
+- [ ] Otimizador de código.
+- [ ] Gerador de código de máquina.
 
 
 #### Folder structure
