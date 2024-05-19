@@ -34,10 +34,6 @@ Token* get_next_token(TokStream* tok_stream) {
         ABORT_PROGRAM("Vacuous token stream");
     }
 
-    if (feof(tok_stream->src_code)) {
-        return NULL;
-    }
-
     size_t token_buff_len = INIT_TOKEN_LEN;
     size_t token_len = 0;
     Token* token;
@@ -47,6 +43,9 @@ Token* get_next_token(TokStream* tok_stream) {
     StateTransition* transition;
     while ((tok_stream->dfa.current_state)->type != reeturn) {
         char next_char = fgetc(tok_stream->src_code);
+        if (feof(tok_stream->src_code)) {
+            return NULL;
+        }
         transition = getNextState(tok_stream->dfa.current_state, next_char);
         if (transition == NULL) {
             ABORT_PROGRAM("Reached undefined transition. Please define all transitions.")
