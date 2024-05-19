@@ -182,13 +182,14 @@ StateTransition* getNextState(State* currentState, char input) { //TODO IMPLEMEN
     for (size_t i = 0; i < currentState->transitionCount; i++) {
         StateTransition* transition = &currentState->transitions[i];
 
-        if ((strcmp(transition->input, "Digito") == 0 && isDigit(input)) ||
-            (strcmp(transition->input, "Nao-Digito") == 0 && isNonDigit(input)) ||
-            (strcmp(transition->input, "Simbolo") == 0 && isSymbol(input)) ||
-            (strcmp(transition->input, "Letra") == 0 && isLetter(input)) ||
-            (strcmp(transition->input, "Espaco") == 0 && isWhitespace(input)) ||
-            (strcmp(transition->input, "Quebra de linha") == 0 && isWhitespace(input)) ||
-            (strlen(transition->input) == 1 && transition->input[0] == input)) {
+        int is_digit = (strcmp(transition->input, "digito") == 0 && isDigit(input));
+        int is_symbol = (strcmp(transition->input, "simbolo") == 0 && isSymbol(input));
+        int is_letter = (strcmp(transition->input, "letra") == 0 && isLetter(input));
+        int is_whitespace = (strcmp(transition->input, "branco") == 0 && isWhitespace(input));
+        int is_newline = (strcmp(transition->input, "quebra-linha") == 0 && isNewline(input));
+        int is_single_char = (strlen(transition->input) == 1 && transition->input[0] == input);
+
+        if (is_digit || is_symbol || is_letter || is_whitespace || is_newline || is_single_char) {
             return transition;
         }
     }

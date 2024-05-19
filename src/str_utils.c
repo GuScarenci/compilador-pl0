@@ -57,3 +57,7 @@ bool isSymbol(char c) {
 bool isWhitespace(char c) {
     return ('\t' <= c && c <= CARRIAGE_RETURN) || (c == ' '); 
 }
+
+bool isNewline(char c) {
+    return c == '\n';
+}
