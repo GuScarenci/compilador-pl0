@@ -11,6 +11,15 @@
 #define TOKEN_GROWTH_FACTOR 2
 
 /*
+ * A keyword pair is an abstract data type that encapsulates a
+* keyword and its type, conformant to PL/0's grammar rules. 
+*/
+typedef struct keyword_pair_t{
+    char* keyword;
+    char* type;
+} Keyword;
+
+/*
  * Token Stream is an abstract data type that encapsulates
  * a single source file and its stream of token pairs.
  * It fulfills the task of lexical analysis, returning a stream
@@ -19,6 +28,8 @@
 typedef struct tok_stream_t {
     FILE* src_code;
     StateMachine dfa;
+    Keyword* keywords;
+    size_t num_keywords;
 } TokStream;
 
 /*

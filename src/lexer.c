@@ -7,6 +7,36 @@
 #include "str_utils.h"
 #include "state_machine.h"
 
+static const char* restrict first_line_keywords_dsv = "Keyword|Type";
+
+void loadKeywords(const char* restrict filename, TokStream *tok_stream) {
+    FILE* file;
+    OPEN_FILE(file, filename, "r")
+
+    char *line = NULL;
+    readLine(&line, file);
+    if (strcmp(line, first_line_keywords_dsv) != 0) {
+        ABORT_PROGRAM("Transitions DSV %s has no header. The first line must be \"%s\".", 
+                      filename, first_line_keywords_dsv)
+    }
+
+    free(line);
+    while (!feof(file)) {
+        readLine(&line, file);
+        int num_fields;
+        char** fields = split(line, "|", &num_fields);
+        if (num_fields != 2) {
+            ABORT_PROGRAM("Malformed line on %s: %s\n"
+                          "DSV must have 2 fields per line.", 
+                          filename, line)
+        }
+
+        XREALLOC(Keyword, tok_stream->keywords, tok_stream->num_keywords + 1)
+        tok_stream->keywords[tok_stream->num_keywords].keyword = strdup(fields[0]);
+        tok_stream->keywords[tok_stream->num_keywords].type = strdup(fields[1]);
+        tok_stream->num_keywords++;
+    }
+}
 
 TokStream* token_stream_init(const char* restrict source_path) {
     TokStream* tok_stream = NULL;
@@ -14,6 +44,7 @@ TokStream* token_stream_init(const char* restrict source_path) {
     XCALLOC(TokStream, tok_stream, 1)
     OPEN_FILE(tok_stream->src_code, source_path, "r");
     initializeStateMachine(&(tok_stream->dfa));
+    loadKeywords("res/keywords.csv", tok_stream);
 
     return tok_stream;
 }
@@ -71,8 +102,19 @@ Token* get_next_token(TokStream* tok_stream) {
         }
     }
 
-    token->type = strdup(tok_stream->dfa.current_state->output);
     token->token_str[token_len] = '\0';
+
+    char* output = strdup(tok_stream->dfa.current_state->output);
+    if(strcmp(tok_stream->dfa.current_state->output, "identifier") == 0) {
+        for (size_t i = 0; i < tok_stream->num_keywords; i++) {
+            if (strcmp(token->token_str, tok_stream->keywords[i].keyword) == 0) {
+                output = tok_stream->keywords[i].type;
+                break;
+            }
+        }
+    }
+
+    token->type = strdup(output);
     tok_stream->dfa.current_state = tok_stream->dfa.initial_state;
 
     return token;
