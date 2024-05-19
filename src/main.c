@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv){
     if(argc != 3){
-        ABORT_PROGRAM("Usage: make run ARGS=\"<source_file> <output file>\"\n");
+        ABORT_PROGRAM("Usage: make run ARGS=\"<source_file> <output_file>\"\n");
     }
 
     TokStream* b = token_stream_init(argv[1]);
