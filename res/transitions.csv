@@ -1,3 +1,4 @@
+CurrentState|Input|NextState|Direction
 Q0|Outro|E2|F
 Q0|,|O1|F
 Q0|;|O2|F
@@ -42,4 +43,3 @@ Q5|outro|E7|R
 Q6|outro|Q6|F
 Q6|}|O16|F
 Q6|\n|E4|R
-
