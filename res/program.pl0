@@ -3,7 +3,7 @@ BEGIN
     a:=25a32bc;
     b:=3;
     c:=@+b
-    IF a < b THEN
+    IF a <> b THEN
         VAR d :=5
     IFa a <\= c THEN
     
