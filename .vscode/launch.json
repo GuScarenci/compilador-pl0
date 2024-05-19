@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/program",
-            "args": [],
+            "args": ["${input:args}"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -31,6 +31,14 @@
             "cwd": "${workspaceFolder}",
             "externalConsole": false,
             "preLaunchTask": "C: gcc build project"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "args",
+            "type":"promptString",
+            "description": "Program Args",
+            "default": "res/program.pl0"
         }
     ]
 }

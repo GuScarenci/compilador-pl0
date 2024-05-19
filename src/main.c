@@ -4,8 +4,14 @@
 #include "lexer.h"
 #include "str_utils.h"
 
-int main(void){
-    TokStream* b = token_stream_init("res/program.pl0");
+int main(int argc, char** argv){
+    if(argc != 2){
+        printf("Usage: make run ARGS=\"<source_file>\"\n");
+        exit(EXIT_FAILURE);
+    }
+    char* source_path = argv[1];
+
+    TokStream* b = token_stream_init(source_path);
     Token* t = NULL;
 
     while ((t = get_next_token(b))) {
