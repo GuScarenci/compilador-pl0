@@ -4,7 +4,7 @@ PROCEDURE Double;
 BEGIN
   a := a * 2
 END;
-
+{olha libas dini}
 BEGIN
   a := x + y;
   CALL Double;
