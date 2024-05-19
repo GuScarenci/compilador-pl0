@@ -1,10 +1,17 @@
-VAR a_b3, b, c;
+CONST x = 5, y = 10;
+VAR a, b;
+PROCEDURE Double;
 BEGIN
-    a:=25a32bc;
-    b:=3;
-    c:=@+b
-    IF a <> b THEN
-        VAR d :=5
-    IFa a <\= c THEN
-    
+  a := a * 2
+END;
+
+BEGIN
+  a := x + y;
+  CALL Double;
+  IF a <> 30 THEN
+    b := a * 2
+  ELSE
+    b := a / 2;
+  WHILE b > 0 DO
+    b := b - 1
 END.
