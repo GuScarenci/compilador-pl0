@@ -16,7 +16,7 @@ int main(int argc, char** argv){
 
     OPEN_FILE(out_file, argv[2], "w")
     while ((t = get_next_token(b))) {
-        fprintf(out_file, "%s \t, %s\n", t->token_str, t->type);
+        fprintf(out_file, "%s , %s\n", t->token_str, t->type);
         free(t->token_str);
         free(t->type);
         free(t);
