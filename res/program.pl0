@@ -17,7 +17,9 @@ BEGIN
     b_1 := b - 1
 END.
 
-
+BEGIN
 CONST d:=87697\2;
 CONST l:=8765faz;
 CONST p:=298345 % 67;
+CALL Double;
+END
