@@ -17,5 +17,7 @@ BEGIN
     b_1 := b - 1
 END.
 
-CONST d:=87697;
+
+CONST d:=87697\2;
 CONST l:=8765faz;
+CONST p:=298345 % 67;
