@@ -64,8 +64,10 @@ Token* get_next_token(TokStream* tok_stream) {
                 XREALLOC(char, token->token_str, token_buff_len)
             }
 
-            token->token_str[token_len] = next_char;
-            token_len++;
+            if(!isNewline(next_char) && !isWhitespace(next_char)) { // Ignore whitespace and newline characters
+                token->token_str[token_len] = next_char;
+                token_len++;
+            }
         }
     }
 
