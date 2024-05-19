@@ -117,8 +117,12 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
         }
 
         if (new_state.type == initial) {
-            *(sm->initial_state) = new_state;
-            sm->current_state = sm->initial_state;
+            if(sm->initial_state != NULL) {
+                ABORT_PROGRAM("There can only be one initial state")
+            }
+            State *initial_state = getState(sm, new_state.stateName);
+            sm->initial_state = initial_state;
+            sm->current_state = initial_state;
         }
 
         free(line);
@@ -175,7 +179,7 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
 }
 
 StateTransition* getNextState(State* currentState, char input) { //TODO IMPLEMENT
-for (size_t i = 0; i < currentState->transitionCount; i++) {
+    for (size_t i = 0; i < currentState->transitionCount; i++) {
         StateTransition* transition = &currentState->transitions[i];
 
         if ((strcmp(transition->input, "Digito") == 0 && isDigit(input)) ||
@@ -208,7 +212,7 @@ void initializeStateMachine(StateMachine* sm) {
     sm->states_hash = NULL;
     sm->stateCount = 0;
 
-    XALLOC(State, sm->initial_state, 1)
+    //XALLOC(State, sm->initial_state, 1)
     init_hash(sm);
 
     loadStates(states_file, sm);
