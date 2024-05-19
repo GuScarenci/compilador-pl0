@@ -1,6 +1,10 @@
-VAR a, b, c;
+VAR a_b3, b, c;
 BEGIN
-    a:=2;
+    a:=25;
     b:=3;
     c:=@+b
+    IF a < b THEN
+        VAR d :=5
+    IF a <= c THEN
+    
 END.

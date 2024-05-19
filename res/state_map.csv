@@ -18,13 +18,9 @@ O8|2|period
 O9|2|simb_div
 O10|2|rel_op
 O11|2|assign_op
-O12|2|rel_op
 O13|2|integer_literal
-O14|2|rel_op
-O15|2|rel_op
 O16|2|comment
-O17|2|rel_op
-O18|2|rel_op
+P0|3
 E1|1|Found invalid character or ident. Use only letters and digits for identifiers.
 E2|1|Invalid character
 E3|1|Ident beggining with digital or invalid integer literal. Did you mean to write a number?
