@@ -164,10 +164,10 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
 
         if (strcmp(fields[3], "F") == 0) {
             state->transitions[state->transitionCount - 1].shift = GO_FOWARD;
-        } else if (strcmp(fields[3], "R") == 0) {
+        } else if (strcmp(fields[3], "B") == 0) {
             state->transitions[state->transitionCount - 1].shift = GO_BACK;
         } else {
-            ABORT_PROGRAM("Ill-formed line: %s\nLast field must be \"R\" or \"L\": "
+            ABORT_PROGRAM("Ill-formed line: %s\nLast field must be \"F\" or \"B\": "
                           "whether the head moves left or right on the tape")
         }
 
