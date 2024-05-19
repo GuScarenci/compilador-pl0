@@ -116,6 +116,11 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
                           "a number from 0 to 3", filename, line)
         }
 
+        if (new_state.type == initial) {
+            *(sm->initial_state) = new_state;
+            sm->current_state = sm->initial_state;
+        }
+
         free(line);
         free(fields);
     }
@@ -153,10 +158,10 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
         state->transitions[state->transitionCount - 1].input = strdup(fields[1]);
         state->transitions[state->transitionCount - 1].nextState = strdup(fields[2]);
 
-        if (strcmp(fields[3], "R") == 0) {
-            state->transitions[state->transitionCount - 1].shift = GO_RIGHT;
-        } else if (strcmp(fields[3], "L") == 0) {
-            state->transitions[state->transitionCount - 1].shift = GO_LEFT;
+        if (strcmp(fields[3], "F") == 0) {
+            state->transitions[state->transitionCount - 1].shift = GO_FOWARD;
+        } else if (strcmp(fields[3], "R") == 0) {
+            state->transitions[state->transitionCount - 1].shift = GO_BACK;
         } else {
             ABORT_PROGRAM("Ill-formed line: %s\nLast field must be \"R\" or \"L\": "
                           "whether the head moves left or right on the tape")
@@ -169,7 +174,7 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
     fclose(file);
 }
 
-char* getNextState(State* currentState, char input) { //TODO IMPLEMENT
+StateTransition* getNextState(State* currentState, char input) { //TODO IMPLEMENT
 for (size_t i = 0; i < currentState->transitionCount; i++) {
         StateTransition* transition = &currentState->transitions[i];
 
@@ -180,14 +185,14 @@ for (size_t i = 0; i < currentState->transitionCount; i++) {
             (strcmp(transition->input, "Espaco") == 0 && isWhitespace(input)) ||
             (strcmp(transition->input, "Quebra de linha") == 0 && isWhitespace(input)) ||
             (strlen(transition->input) == 1 && transition->input[0] == input)) {
-            return transition->nextState;
+            return transition;
         }
     }
 
     // If no matching transition is found, check for "Outro"
     for (size_t i = 0; i < currentState->transitionCount; i++) {
         if (strcmp(currentState->transitions[i].input, "Outro") == 0) {
-            return currentState->transitions[i].nextState;
+            return &(currentState->transitions[i]);
         }
     }
 
@@ -203,7 +208,9 @@ void initializeStateMachine(StateMachine* sm) {
     sm->states_hash = NULL;
     sm->stateCount = 0;
 
+    XALLOC(State, sm->initial_state, 1)
     init_hash(sm);
+
     loadStates(states_file, sm);
     loadTransitions(transitions_file, sm);
 }

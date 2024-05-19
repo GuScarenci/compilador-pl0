@@ -8,20 +8,20 @@
 #include <string.h>
 
 #define NUM_FIELDS_TRANSITION_CSV 4
-#define GO_RIGHT 1
-#define GO_LEFT -1
+#define GO_FOWARD 1
+#define GO_BACK 0
 
 #define HASH_GROWTH_FACTOR 2
 #define PRIME 37
 #define INIT_TABLE_SIZE 256
 
 #define STATE_HAS_EMPTY_OUTPUT(type) (type == initial || type == regular)
-#define STATE_HAS_NON_EMPTY_OUTPUT(type) (type == error || type == final)
+#define STATE_HAS_NON_EMPTY_OUTPUT(type) (type == error || type == reeturn)
 
-typedef enum state_type {
+typedef enum transition_type {
     initial = 0,
-    error = 1,
-    final = 2,
+    error = 1,                
+    reeturn = 2,                // Misspelled return because using keywords is cringe.
     regular = 3
 } StateType;
 
@@ -43,6 +43,9 @@ typedef struct two_way_moore_machine_t {
     State* states_hash;
     size_t stateCount;
     size_t hash_size;
+
+    State* initial_state;
+    State* current_state;
 } StateMachine;
 
 /*
@@ -83,6 +86,6 @@ void loadTransitions(const char* restrict filename, StateMachine* sm);
 /*
  * Gets the next state based on the current state and input.
  */
-char* getNextState(State* currentState, char input);
+StateTransition* getNextState(State* currentState, char input);
 
 #endif

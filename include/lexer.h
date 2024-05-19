@@ -7,6 +7,9 @@
 #include <sys/types.h>
 #include "state_machine.h"
 
+#define INIT_TOKEN_LEN 16
+#define TOKEN_GROWTH_FACTOR 2
+
 /*
  * Token Stream is an abstract data type that encapsulates
  * a single source file and its stream of token pairs.
@@ -26,7 +29,7 @@ typedef struct tok_stream_t {
  */
 typedef struct token_pair_t {
     char* token_str;
-    uint32_t type;
+    char* type;
 } Token;
 
 /*
