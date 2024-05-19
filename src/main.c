@@ -5,11 +5,11 @@
 #include "str_utils.h"
 
 int main(void){
-    TokStream* b = token_stream_init("res/a.pl0");
+    TokStream* b = token_stream_init("res/program.pl0");
     Token* t = NULL;
 
     while ((t = get_next_token(b))) {
-        printf("Found token %s of type %s\n", t->token_str, t->type);
+        printf("%s\t, %s\n", t->token_str, t->type);
         free(t);
     }
 
