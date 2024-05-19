@@ -1,17 +1,21 @@
-CONST x = 5, y = 10;
+CONST x @= 5, y = 10;
 VAR a, b;
 PROCEDURE Double;
 BEGIN
   a := a * 2
 END;
-{olha libas dini}
+{olha 
+libas dini}
 BEGIN
   a := x + y;
   CALL Double;
-  IF a <> 30 THEN
-    b := a * 2
+  IF a <!> 30 THEN
+    2b := a*2
   ELSE
-    b := a / 2;
+    b := a/2;
   WHILE b > 0 DO
-    b := b - 1
+    b_1 := b - 1
 END.
+
+CONST d:=87697;
+CONST l:=8765faz;
