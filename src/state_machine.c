@@ -188,7 +188,7 @@ StateTransition* getNextState(State* currentState, char input) { //TODO IMPLEMEN
         int is_symbol = (strcmp(transition->input, "simbolo") == 0 && isSymbol(input));
         int is_letter = (strcmp(transition->input, "letra") == 0 && isLetter(input));
         int is_whitespace = (strcmp(transition->input, "branco") == 0 && isWhitespace(input));
-        int is_newline = (strcmp(transition->input, "quebra-linha") == 0 && isNewline(input));
+        int is_newline = (strcmp(transition->input, "quebra-linha") == 0 && '\n' == input);
         int is_single_char = (strlen(transition->input) == 1 && transition->input[0] == input);
 
         if (is_digit || is_symbol || is_letter || is_whitespace || is_newline || is_single_char) {

@@ -42,10 +42,6 @@ bool isDigit(char c) {
     return c >= '0' && c <= '9';
 }
 
-bool isNonDigit(char c) {
-    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || isSymbol(c);
-}
-
 bool isLetter(char c) {
     return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
@@ -56,8 +52,4 @@ bool isSymbol(char c) {
 
 bool isWhitespace(char c) {
     return ('\t' <= c && c <= CARRIAGE_RETURN) || (c == ' '); 
-}
-
-bool isNewline(char c) {
-    return c == '\n';
 }
