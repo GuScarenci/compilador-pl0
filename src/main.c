@@ -18,6 +18,7 @@ int main(int argc, char** argv){
         printf("%s \t, %s\n", t->token_str, t->type);
         free(t->token_str);
         free(t->type);
+        free(t);
     }
 
     token_stream_free(&b);
