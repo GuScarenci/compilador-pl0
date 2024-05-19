@@ -35,7 +35,13 @@ void loadKeywords(const char* restrict filename, TokStream *tok_stream) {
         tok_stream->keywords[tok_stream->num_keywords].keyword = strdup(fields[0]);
         tok_stream->keywords[tok_stream->num_keywords].type = strdup(fields[1]);
         tok_stream->num_keywords++;
+
+        free(line);
+        free(*fields);
+        free(fields);
     }
+
+    fclose(file);
 }
 
 TokStream* token_stream_init(const char* restrict source_path) {
@@ -54,6 +60,12 @@ void token_stream_free(TokStream** tok_stream) {
         fclose((*tok_stream)->src_code);
     }
 
+    for (size_t i = 0; i < (*tok_stream)->num_keywords; i++) {
+        free((*tok_stream)->keywords[i].type);
+        free((*tok_stream)->keywords[i].keyword);
+    }
+
+    free((*tok_stream)->keywords);
     freeStateMachine(&((*tok_stream)->dfa));
     free(*tok_stream);
 
@@ -104,7 +116,7 @@ Token* get_next_token(TokStream* tok_stream) {
 
     token->token_str[token_len] = '\0';
 
-    char* output = strdup(tok_stream->dfa.current_state->output);
+    char* output = tok_stream->dfa.current_state->output;
     if(strcmp(tok_stream->dfa.current_state->output, "identifier") == 0) {
         for (size_t i = 0; i < tok_stream->num_keywords; i++) {
             if (strcmp(token->token_str, tok_stream->keywords[i].keyword) == 0) {
