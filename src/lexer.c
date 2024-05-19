@@ -86,9 +86,6 @@ Token* get_next_token(TokStream* tok_stream) {
         }
 
         (tok_stream->dfa).current_state = getState(&tok_stream->dfa, transition->nextState);
-        if (tok_stream->dfa.current_state->type == error) {
-            fprintf(stderr, "%s", tok_stream->dfa.current_state->output);
-        }
 
         if (transition->shift == GO_BACK) {
             fseek(tok_stream->src_code, -1, SEEK_CUR); // Head goes backwards.
@@ -98,8 +95,10 @@ Token* get_next_token(TokStream* tok_stream) {
                 XREALLOC(char, token->token_str, token_buff_len)
             }
 
-            token->token_str[token_len] = next_char;
-            token_len++;
+            if(!isNewline(next_char) && !isWhitespace(next_char)) { // Ignore whitespace and newline characters
+                token->token_str[token_len] = next_char;
+                token_len++;
+            }
         }
     }
 

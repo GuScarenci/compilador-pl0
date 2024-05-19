@@ -9,7 +9,7 @@ int main(void){
     Token* t = NULL;
 
     while ((t = get_next_token(b))) {
-        printf("Found token %s of type %s\n", t->token_str, t->type);
+        printf("%s \t, %s\n", t->token_str, t->type);
         free(t->token_str);
         free(t->type);
     }
