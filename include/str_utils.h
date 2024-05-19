@@ -18,12 +18,6 @@ char** split(const char* line, const char* delimiter, size_t* count);
 bool isDigit(char c);
 
 /*
- * This function returns if a character is a letter or valid symbol in PL/0.
- * In our mini-regex notation, this recognizes \D.
- */
-bool isNonDigit(char c);
-
-/*
  * This function returns if a character is a valid symbol in PL/0.
  * In our mini-regex notation, this recognizes \p.
  */
@@ -40,10 +34,5 @@ bool isLetter(char c);
  * In our mini-regex notation, this recognizes \s.
  */
 bool isWhitespace(char c);
-
-/*
- * This function returns if a character is a newline. 
-*/
-bool isNewline(char c);
 
 #endif
