@@ -14,7 +14,7 @@ PROCEDURE fac;
 
         ELSE
         BEGIN
-            arg := n – 1;
+            arg := n - 1;
             CALL fac;
             result := n * result;
         END;
