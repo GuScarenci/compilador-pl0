@@ -9,7 +9,7 @@
 char* trimNewline(char* str);
 
 // Function to split a line into tokens by a delimiter
-char** split(const char* line, const char* delimiter, int* count);
+char** split(const char* line, const char* delimiter, size_t* count);
 
 /*
  * This function returns if a character is a numerical digit.

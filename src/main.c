@@ -10,6 +10,8 @@ int main(void){
 
     while ((t = get_next_token(b))) {
         printf("Found token %s of type %s\n", t->token_str, t->type);
+        free(t->token_str);
+        free(t->type);
         free(t);
     }
 

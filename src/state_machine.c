@@ -87,7 +87,7 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
     free(line);
     while (!feof(file)) {
         readLine(&line, file);
-        int num_fields;
+        size_t num_fields;
         char** fields = split(line, "|", &num_fields);
         if (num_fields < 2 || num_fields > 3) {
             ABORT_PROGRAM("Malformed line on %s: %s\n"
@@ -126,6 +126,7 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
         }
 
         free(line);
+        free(*fields);
         free(fields);
     }
 
@@ -138,7 +139,7 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
 
     char* line;
     char** fields;
-    int count;
+    size_t count;
 
     readLine(&line, file);
     if (strcmp(line, first_line_transitions_dsv) != 0) {
@@ -171,8 +172,9 @@ void loadTransitions(const char* restrict filename, StateMachine* sm) { //TODO I
                           "whether the head moves left or right on the tape")
         }
 
-        free(line);
+        free(*fields);
         free(fields);
+        free(line);
     }
 
     fclose(file);
