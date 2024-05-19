@@ -3,23 +3,25 @@
 
 #include "lexer.h"
 #include "str_utils.h"
+#include "IO_utils.h"
 
 int main(int argc, char** argv){
-    if(argc != 2){
-        printf("Usage: make run ARGS=\"<source_file>\"\n");
-        exit(EXIT_FAILURE);
+    if(argc != 3){
+        ABORT_PROGRAM("Usage: make run ARGS=\"<source_file> <output file>\"\n");
     }
-    char* source_path = argv[1];
 
-    TokStream* b = token_stream_init(source_path);
+    TokStream* b = token_stream_init(argv[1]);
+    FILE* out_file;
     Token* t = NULL;
 
+    OPEN_FILE(out_file, argv[2], "w")
     while ((t = get_next_token(b))) {
-        printf("%s \t, %s\n", t->token_str, t->type);
+        fprintf(out_file, "%s \t, %s\n", t->token_str, t->type);
         free(t->token_str);
         free(t->type);
         free(t);
     }
 
     token_stream_free(&b);
+    fclose(out_file);
 }
