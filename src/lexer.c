@@ -34,6 +34,10 @@ Token* get_next_token(TokStream* tok_stream) {
         ABORT_PROGRAM("Vacuous token stream");
     }
 
+    if (feof(tok_stream->src_code)) {
+        return NULL;
+    }
+
     size_t token_buff_len = INIT_TOKEN_LEN;
     size_t token_len = 0;
     Token* token;
