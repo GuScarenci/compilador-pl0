@@ -18,7 +18,7 @@
 #***********************************************************/
 
 CC ?= gcc
-ZIP ?= 7za
+ZIP ?= zip
 PDFLAGS += -march=native
 CFLAGS += -Wall -Wextra -Wpedantic -std=gnu99
 LDFLAGS += -lm
