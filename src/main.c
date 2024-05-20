@@ -30,7 +30,7 @@ int main(int argc, char** argv){
         ABORT_PROGRAM("Usage: make run ARGS=\"<source_file> <output_file>\"\n");
     }
 
-    // Initializes token stream, calls lexer analyser and output file 
+    // Initializes token stream, calls lexer analyzer and output file 
     TokStream* b = token_stream_init(argv[1]);
     FILE* out_file;
     Token* t = NULL;
