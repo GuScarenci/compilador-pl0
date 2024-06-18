@@ -1,3 +1,4 @@
+{valida comment}
 CONST x @= 5, y = 10;
 VAR a, b;
 PROCEDURE Double;
