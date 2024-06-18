@@ -35,13 +35,14 @@
 #define INIT_TABLE_SIZE 256
 
 #define STATE_HAS_EMPTY_OUTPUT(type) (type == initial || type == regular)
-#define STATE_HAS_NON_EMPTY_OUTPUT(type) (type == error || type == reeturn)
+#define STATE_HAS_NON_EMPTY_OUTPUT(type) (type == error || type == reeturn || type == transitional_error)
 
 typedef enum transition_type {
     initial = 0,
     error = 1,                
     reeturn = 2,                // Misspelled return because using keywords is cringe.
-    regular = 3
+    regular = 3,
+    transitional_error = 4
 } StateType;
 
 typedef struct transition_t {
