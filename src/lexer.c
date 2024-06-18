@@ -131,6 +131,19 @@ Token* get_next_token(TokStream* tok_stream) {
                 token_len++;
             }
         }
+
+        if((tok_stream->dfa.current_state)->output == NULL)
+            continue;
+
+        if(strcmp((tok_stream->dfa.current_state)->output, "comment") == 0) {
+            // Ignore comments
+            free(token->token_str);
+            free(token);
+            token_buff_len = INIT_TOKEN_LEN;
+            token_len = 0;
+            XALLOC(Token, token, 1)
+            XALLOC(char, token->token_str, token_buff_len)
+        }
     }
 
     token->token_str[token_len] = '\0';
