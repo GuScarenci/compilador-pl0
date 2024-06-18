@@ -132,7 +132,7 @@ void loadStates(const char* restrict filename, StateMachine* sm) { //TODO IMPLEM
         } else {
             ABORT_PROGRAM("Malformed line on %s: %s\n"
                           "the second field must be a mapped state type, "
-                          "a number from 0 to 3", filename, line)
+                          "a number from 0 to 4", filename, line)
         }
 
         if (new_state.type == initial) {
