@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/program",
-            "args": ["${input:args}"],
+            "args": ["${input:arg1}", "${input:arg2}"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -35,10 +35,16 @@
     ],
     "inputs": [
         {
-            "id": "args",
+            "id": "arg1",
             "type":"promptString",
-            "description": "Program Args",
-            "default": "res/program.pl0"
+            "description": "Input File",
+            "default": "res/teste1.txt"
+        },
+        {
+            "id": "arg2",
+            "type":"promptString",
+            "description": "Output File",
+            "default": "res/saida.txt"
         }
     ]
 }
