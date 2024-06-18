@@ -58,5 +58,6 @@ Q5|digito|O10|B
 Q5|branco|O10|B
 Q5|outro|P2|B
 Q6|outro|Q6|F
-Q6|}|O12|F
+Q6|}|P5|F
 Q6|quebra-linha|E4|B
+P5|outro|Q0|F

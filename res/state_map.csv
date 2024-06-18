@@ -19,12 +19,12 @@ O9|2|simb_div
 O10|2|rel_op
 O11|2|assign_op
 O13|2|integer_literal
-O12|2|comment
-P0|3
-P1|3
-P2|3
-P3|3
-P4|3
+P0|4|identifier
+P1|4|ident
+P2|4|angular brackets
+P3|4|number
+P4|4|colons
+P5|4|comment
 E1|1|Found invalid character on candidate identifier. Use only letters and digits for identifiers.
 E2|1|Invalid character
 E3|1|Ident beggining with digits or invalid integer literal. Did you mean to write a number?
