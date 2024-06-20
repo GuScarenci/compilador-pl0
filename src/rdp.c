@@ -201,9 +201,12 @@ void fator(TokStream* b){
         match_type(b, "identifier", NULL);
     }else if(!strcmp(current_token->type, "integer_literal")){
         match_type(b, "integer_literal", NULL);
-    }else{
+    }else if(!strcmp(current_token->type, "left_par")){
+        match_type(b, "left_par", NULL);
         expressao(b);
+        match_type(b, "right_par", "Missing closing parenthesis in expression");
     }
+    //TODO handle error
 }
 
 void mais_fatores(TokStream* b){
