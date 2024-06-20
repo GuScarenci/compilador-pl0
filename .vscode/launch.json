@@ -38,13 +38,13 @@
             "id": "arg1",
             "type":"promptString",
             "description": "Input File",
-            "default": "res/teste1.txt"
+            "default": "res/program.pl0"
         },
         {
             "id": "arg2",
             "type":"promptString",
             "description": "Output File",
-            "default": "res/saida.txt"
+            "default": "out/saida.txt"
         }
     ]
 }

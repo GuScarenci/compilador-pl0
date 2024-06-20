@@ -1,16 +1,6 @@
-VAR  x,y;
-
-{erro de identificador de procedimento}
-PROCEDURE som@;
-	VAR a,b,c;
-BEGIN
-	a:=x;
-	b := y ;
-	c:=a+b
-END
-
-BEGIN
-	x=2.3; {erro de tipo de número}
-	y=3;
-	CALL soma
-END.
+CONST matheus = 5, gustavo = 13;
+VAR  x, y;
+PROCEDURE cria;
+	VAR a, b;
+	CALL banana;
+.
