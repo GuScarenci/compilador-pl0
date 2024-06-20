@@ -70,6 +70,7 @@ TokStream* token_stream_init(const char* restrict source_path) {
     OPEN_FILE(tok_stream->src_code, source_path, "r");
     initializeStateMachine(&(tok_stream->dfa));
     loadKeywords("res/keywords.csv", tok_stream);
+    tok_stream->current_line = 0;
 
     return tok_stream;
 }
@@ -129,6 +130,9 @@ Token* get_next_token(TokStream* tok_stream) {
             if(!isWhitespace(next_char)) { // Ignore whitespace and newline characters
                 token->token_str[token_len] = next_char;
                 token_len++;
+            }else{
+                if(next_char == '\n')
+                    tok_stream->current_line++;
             }
         }
 

@@ -48,6 +48,7 @@ typedef struct keyword_pair_t{
 typedef struct tok_stream_t {
     FILE* src_code;
     StateMachine dfa;
+    size_t current_line;
     Keyword* keywords;
     size_t num_keywords;
 } TokStream;

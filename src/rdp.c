@@ -49,7 +49,7 @@ int match_type(TokStream* b, char* comp_type, char* error_msg){
         if(error_msg == NULL)
             printf("ERROR!\n");
         else
-            printf("%s\n", error_msg);
+            printf("ERROR (line %ld): %s\n", b->current_line, error_msg);
         exit(-1);
     }
 }
