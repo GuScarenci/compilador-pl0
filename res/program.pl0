@@ -8,7 +8,7 @@ END;
 BEGIN
   a := x + y;
   CALL Double;
-  IF a <> 30 THEN
+  IF a <> 30 
     b := a * 2
   ;
   WHILE b > 0 DO
