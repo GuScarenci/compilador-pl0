@@ -26,7 +26,7 @@ Token* current_token = NULL;
 void rdp(TokStream* b){
     current_token = get_next_token(b);
     programa(b);
-    printf("SUCESS!\n");
+    printf("SUCCESS!\n");
 }
 
 int match(TokStream* b, char* comp_token){
