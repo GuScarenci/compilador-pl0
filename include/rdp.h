@@ -17,9 +17,51 @@
 *                 Arquivo rdp.h                             *
 ************************************************************/
 
-#ifndef __STATE_MACHINE_H__
-#define __STATE_MACHINE_H__
+#ifndef __RDP_H__
+#define __RDP_H__
 
-void programa();
+#include <string.h>
+
+#include "lexer.h"
+
+void rdp(TokStream* b);
+
+int match(TokStream* b, char* comp_token);
+
+void programa(TokStream* b);
+
+void bloco(TokStream* b);
+
+void declaracao(TokStream* b);
+
+void constante(TokStream* b);
+
+void mais_const(TokStream* b);
+
+void variavel(TokStream* b);
+
+void mais_var(TokStream* b);
+
+void procedimento();
+
+void comando();
+
+void mais_cmd();
+
+void expressao();
+
+void operador_unario();
+
+void termo();
+
+void mais_termos();
+
+void fator();
+
+void mais_fatores();
+
+void condicao();
+
+void relacional();
 
 #endif

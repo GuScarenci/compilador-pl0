@@ -16,21 +16,23 @@
 *                                                           *
 *                 Arquivo rdp.c                             *
 ************************************************************/
+#include <string.h>
 
 #include "lexer.h"
+#include "rdp.h"
 
 Token* current_token = NULL;
 
 void rdp(TokStream* b){
+    current_token = get_next_token(b);
     programa(b);
-    if(current_token->token_str == "$"){
-        printf("SUCESS!");
-    }
+    printf("SUCESS!\n");
 }
 
 int match(TokStream* b, char* comp_token){
-    if(current_token->token_str == comp_token){
-        current_token = get_next_token(b)->token_str;
+    fflush(stdout);
+    if(!strcmp(current_token->token_str,comp_token)){
+        current_token = get_next_token(b);
         return 1;
     }
     else{
@@ -48,4 +50,55 @@ void bloco(TokStream* b){
     declaracao(b);
     comando(b);
 }
+
+void declaracao(TokStream* b){
+    return;
+    constante(b);
+    variavel(b);
+    procedimento(b);
+}
+
+void constante(TokStream* b){
+    return;
+    if(!strcmp(current_token->token_str,"CONST")){
+        match(b,"CONST");
+        match(b,"ident");
+        match(b,"=");
+        match(b,"numero");
+        mais_const(b);
+    }
+    else{
+        return; //epsilon
+    }
+}
+
+void mais_const(TokStream* b){return;}
+
+void variavel(TokStream* b){return;}
+
+void mais_var(TokStream* b){return;}
+
+void procedimento(TokStream* b){return;}
+
+void comando(TokStream* b){return;}
+
+void mais_cmd(TokStream* b){return;}
+
+void expressao(TokStream* b){return;}
+
+void operador_unario(TokStream* b){return;}
+
+void termo(TokStream* b){return;}
+
+void mais_termos(TokStream* b){return;}
+
+void fator(TokStream* b){return;}
+
+void mais_fatores(TokStream* b){return;}
+
+void condicao(TokStream* b){return;}
+
+void relacional(TokStream* b){return;}
+
+
 

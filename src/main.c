@@ -21,6 +21,7 @@
 #include <stdlib.h>
 
 #include "lexer.h"
+#include "rdp.h"
 #include "str_utils.h"
 #include "IO_utils.h"
 
@@ -37,12 +38,18 @@ int main(int argc, char** argv){
 
     // Creates output file and prints token_stream to it 
     OPEN_FILE(out_file, argv[2], "w")
-    while ((t = get_next_token(b))) {
-        fprintf(out_file, "%s , %s\n", t->token_str, t->type);
-        free(t->token_str);
-        free(t->type);
-        free(t);
-    }
+    
+    //FUNCAO RECURSIVE DESCENT PARSER
+    rdp(b);
+
+
+    //FUNCAO GENERICA TRAB 1
+    // while ((t = get_next_token(b))) {
+    //     fprintf(out_file, "%s , %s\n", t->token_str, t->type);
+    //     free(t->token_str);
+    //     free(t->type);
+    //     free(t);
+    // }
 
     // Frees memory, closes files and returns correct
     token_stream_free(&b);
