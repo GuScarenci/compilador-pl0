@@ -66,18 +66,17 @@ int match_function(int field, char* comp_type, SyncTokens immediate_tokens, Sync
 
     if(match_expected){
         current_token = get_next_token(token_stream);
-        //TODO check for lexical errors here
         return SUCCESS;
     }
     else{
+        //TODO check for lexical errors here
+        
         if((immediate_tokens.num_tokens + parent_tokens.num_tokens) == 0)
             return SYNC_ERROR;
 
         while(current_token != NULL){
-            //TODO somehow we should first check if we find anything in the immediate tokens with some depth
-            if(part_of(current_token->type, immediate_tokens)) //SyncToken is always a list of types
+            if(part_of(current_token->type, immediate_tokens)) 
                 return IMMEDIATE;
-            //TODO if we did not find anything in the immediate tokens, we should go back to the token where we found the error and check if it is in the parent_tokens
             if(part_of(current_token->type, parent_tokens))
                 return PARENT;
 
