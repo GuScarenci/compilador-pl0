@@ -49,6 +49,7 @@ typedef struct tok_stream_t {
     FILE* src_code;
     char* source_path;
     size_t current_line;
+    size_t current_char_pos;
 
     StateMachine dfa;
     Keyword* keywords;
@@ -64,6 +65,10 @@ typedef struct tok_stream_t {
 typedef struct token_pair_t {
     char* token_str;
     char* type;
+    size_t line;
+    size_t size;
+    size_t first_char_pos;
+    bool is_error;
 } Token;
 
 /*

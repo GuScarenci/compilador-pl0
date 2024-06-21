@@ -31,24 +31,15 @@
 #define IMMEDIATE 1
 #define PARENT 2
 #define SYNC_ERROR 3
+#define LEXICAL_ERROR 4
 
 #define FIELD_TYPE 0
 #define FIELD_STR 1
 
-#define HANDLE_ERROR(error_message, error_line)                                            \
-    error_count++;                                                                         \
-    fprintf(out_file, ANSI_COLOR_RESET "%s at line %ld: ",                                 \
-                   token_stream->source_path, error_line);                                 \
-    fprintf(out_file, ANSI_COLOR_RED "error: ");                                           \
-    fprintf(out_file, ANSI_COLOR_RESET error_message "\n");
-    
-
 #define MATCH(field_type, str, error_message)                                              \
     do {                                                                                   \
-        size_t error_line = token_stream->current_line;                                    \
-        int32_t result = match_function(field_type, str, immediate_tokens, parent_tokens); \
+        int32_t result = match_function(field_type, str, error_message, immediate_tokens, parent_tokens); \
         if(result != SUCCESS) {                                                            \
-            HANDLE_ERROR(error_message, error_line)                                        \
             if(result == PARENT || result == SYNC_ERROR) {                                 \
                 return;                                                                    \
             }                                                                              \
@@ -61,6 +52,20 @@ typedef struct sync_tokens {
     char **token_types;
 } SyncTokens;
 
+typedef struct error_list_node{
+    char* error_message;
+    size_t error_line;
+    size_t token_start_pos;
+    size_t token_size;
+    struct error_list_node* next;
+} ErrorListNode;
+
+typedef struct error_list_head{
+    size_t error_count;
+    struct error_list_node* first_error;
+} ErrorListHead;
+
+void add_error(ErrorListHead* head, char* error_message, Token error_line);
 
 void rdp(TokStream* b, FILE* out_fp);
 

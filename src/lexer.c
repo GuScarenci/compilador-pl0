@@ -101,6 +101,7 @@ Token* get_next_token(TokStream* tok_stream) {
 
     size_t token_buff_len = INIT_TOKEN_LEN;
     size_t token_len = 0;
+    size_t token_real_size = 0;
     Token* token;
     XALLOC(Token, token, 1)
     XALLOC(char, token->token_str, token_buff_len)
@@ -109,6 +110,9 @@ Token* get_next_token(TokStream* tok_stream) {
     while (((tok_stream->dfa.current_state)->type != reeturn) &&
            ((tok_stream->dfa.current_state)->type != error)) {
         char next_char = fgetc(tok_stream->src_code);
+        tok_stream->current_char_pos++;
+        token_real_size++;
+
         if (feof(tok_stream->src_code)) {
             free(token->token_str);
             free(token);
@@ -133,8 +137,10 @@ Token* get_next_token(TokStream* tok_stream) {
                 token->token_str[token_len] = next_char;
                 token_len++;
             }else{
-                if(next_char == '\n')
+                if(next_char == '\n'){
                     tok_stream->current_line++;
+                    tok_stream->current_char_pos = 0;
+                }
             }
         }
 
@@ -153,6 +159,10 @@ Token* get_next_token(TokStream* tok_stream) {
     }
 
     token->token_str[token_len] = '\0';
+    token->line = tok_stream->current_line;
+    token->size = token_len;
+    token->first_char_pos = tok_stream->current_char_pos - token_real_size;
+    token->is_error = (tok_stream->dfa.current_state)->type == error;
 
     char* output = tok_stream->dfa.current_state->output;
     if(strcmp(tok_stream->dfa.current_state->output, "identifier") == 0) {

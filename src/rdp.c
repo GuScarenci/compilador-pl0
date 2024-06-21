@@ -24,16 +24,87 @@
 static TokStream* token_stream;
 static Token* current_token = NULL;
 static FILE* out_file = NULL;
-static size_t error_count = 0;
+static int error_count = 0;
+static ErrorListHead error_list = {0, NULL};
 
+void add_error(ErrorListHead* error_list, char* error_message, Token error_token){
+    error_list->error_count++;
+    ErrorListNode* new_error = (ErrorListNode*)malloc(sizeof(ErrorListNode));
+    new_error->error_message = error_message;
+    new_error->error_line = error_token.line;
+    new_error->token_start_pos = error_token.first_char_pos;
+    new_error->token_size = error_token.size;
+    new_error->next = NULL;
+    if(error_list->first_error == NULL)
+        error_list->first_error = new_error;
+    else{
+        ErrorListNode* current = error_list->first_error;
+        while(current->next != NULL)
+            current = current->next;
+        current->next = new_error;
+    }
+}
+
+char* read_line_from_file(const char* filename, size_t line_number) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Failed to open file");
+        exit(EXIT_FAILURE);
+    }
+
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    size_t current_line = 1;
+
+    while ((read = getline(&line, &len, file)) != -1) {
+        if (current_line == line_number) {
+            fclose(file);
+            return line;
+        }
+        current_line++;
+    }
+
+    fclose(file);
+    free(line); // Line wasn't found, free the memory
+    return NULL;
+}
+
+// Function to print a line with a specified segment in red
+void print_line_with_highlight(const char* line, size_t start_char, size_t length) {
+    size_t line_len = strlen(line);
+    for (size_t i = 0; i < line_len; i++) {
+        if (i == start_char) {
+            printf(ANSI_COLOR_RED);
+        }
+        if (i == start_char + length) {
+            printf(ANSI_COLOR_RESET);
+        }
+        putchar(line[i]);
+    }
+    printf(ANSI_COLOR_RESET); // Ensure the reset code is printed at the end
+}
 
 void rdp(TokStream* b, FILE* out_fp){
     token_stream = b;
     current_token = get_next_token(token_stream);
     out_file = out_fp;
     programa();
-    if(error_count == 0)
+    if(error_list.error_count == 0){
         printf("SUCCESS!\n");
+    }else{
+        ErrorListNode *current = error_list.first_error;
+        while(current != NULL){
+            char *source_path = token_stream->source_path;
+            char* line = read_line_from_file(source_path, current->error_line);
+            print_line_with_highlight(line, current->token_start_pos, current->token_size);
+
+            fprintf(out_file, "%s at line %ld: ", token_stream->source_path, current->error_line); 
+            fprintf(out_file, "error: "); 
+            fprintf(out_file, "%s \n", current->error_message);
+            current = current->next;
+        }
+    }
 }
 
 int part_of(char* string, SyncTokens sync_tokens){
@@ -45,7 +116,7 @@ int part_of(char* string, SyncTokens sync_tokens){
     return 0;
 }
 
-int match_function(int field, char* comp_type, SyncTokens immediate_tokens, SyncTokens parent_tokens){
+int match_function(int field, char* comp_type, char *error_msg, SyncTokens immediate_tokens, SyncTokens parent_tokens){
     int match_expected = 0;
     if(field == FIELD_TYPE)
         match_expected = !strcmp(current_token->type, comp_type);
@@ -55,16 +126,30 @@ int match_function(int field, char* comp_type, SyncTokens immediate_tokens, Sync
     if(match_expected){
         current_token = get_next_token(token_stream);
         return SUCCESS;
-
     } else{
+        bool lexical_error = false;
+
+        if(current_token->is_error){
+            lexical_error = true;
+            add_error(&error_list, current_token->type, *current_token);
+        }else{
+            add_error(&error_list, error_msg, *current_token);
+        }
+
         if((immediate_tokens.num_tokens + parent_tokens.num_tokens) == 0)
             return SYNC_ERROR;
 
         while(current_token != NULL){
-            if(part_of(current_token->type, immediate_tokens)) 
+            if(part_of(current_token->type, immediate_tokens)){
+                if(lexical_error)
+                    return LEXICAL_ERROR;
                 return IMMEDIATE;
-            if(part_of(current_token->type, parent_tokens))
+            }
+            if(part_of(current_token->type, parent_tokens)){
+                if(lexical_error)
+                    return LEXICAL_ERROR;
                 return PARENT;
+            }
 
             current_token = get_next_token(token_stream);
         }
