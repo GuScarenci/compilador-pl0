@@ -34,7 +34,7 @@ int main(int argc, char** argv){
     // Initializes token stream, calls lexer analyzer and output file 
     TokStream* b = token_stream_init(argv[1]);
     FILE* out_file;
-    Token* t = NULL;
+    //Token* t = NULL;
 
     // Creates output file and prints token_stream to it 
     OPEN_FILE(out_file, argv[2], "w")

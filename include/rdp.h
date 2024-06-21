@@ -28,19 +28,19 @@ void rdp(TokStream* b);
 
 int match(TokStream* b, char* comp_token);
 
-void programa(TokStream* b);
+void programa();
 
-void bloco(TokStream* b);
+void bloco();
 
-void declaracao(TokStream* b);
+void declaracao();
 
-void constante(TokStream* b);
+void constante();
 
-void mais_const(TokStream* b);
+void mais_const();
 
-void variavel(TokStream* b);
+void variavel();
 
-void mais_var(TokStream* b);
+void mais_var();
 
 void procedimento();
 
