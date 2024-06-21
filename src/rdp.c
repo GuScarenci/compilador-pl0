@@ -22,97 +22,153 @@
 #include "rdp.h"
 
 Token* current_token = NULL;
+size_t error_count = 0;
+
+typedef struct sync_tokens
+{
+    char **token_types;
+    size_t num_tokens;
+}SyncTokens;
+
 
 void rdp(TokStream* b){
     current_token = get_next_token(b);
     programa(b);
-    printf("SUCCESS!\n");
+    if(error_count == 0)
+        printf("SUCCESS!\n");
 }
 
-int match_str(TokStream* b, char* comp_token){
+int is_in_sync(SyncTokens sync_tokens, char* token_type){
+    for(size_t i = 0; i < sync_tokens.num_tokens; i++){
+        if(!strcmp(sync_tokens.token_types[i], token_type)){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int match_str(TokStream* b, char* comp_token, char* error_msg, SyncTokens sync_tokens){
     if(!strcmp(current_token->token_str,comp_token)){
         current_token = get_next_token(b);
         return 1;
     }
     else{
-        printf("ERROR!");
-        exit(-1);
+        error_count++;
+        if(error_msg != NULL){
+            printf("Error at line %ld: %s\n", b->current_line , error_msg);
+        } else {
+            printf("match_type ERROR!\n");
+        }
+
+        if(sync_tokens.num_tokens == 0){
+            return 0;
+        }
+
+        while(!is_in_sync(sync_tokens, current_token->type)){
+            current_token = get_next_token(b);
+        }
+        return 0;
     }
 }
 
-int match_type(TokStream* b, char* comp_type, char* error_msg){
+int match_type(TokStream* b, char* comp_type, char* error_msg, SyncTokens sync_tokens){
     if(!strcmp(current_token->type, comp_type)){
         current_token = get_next_token(b);
         return 1;
     }
     else{
-        if(error_msg == NULL)
-            printf("ERROR!\n");
-        else
-            printf("ERROR (line %ld): %s\n", b->current_line, error_msg);
-        exit(-1);
+        error_count++;
+        if(error_msg != NULL){
+            printf("Error at line %ld: %s\n", b->current_line , error_msg);
+        } else {
+            printf("match_type ERROR!\n");
+        }
+
+        if(sync_tokens.num_tokens == 0){
+            return 0;
+        }
+
+        while(!is_in_sync(sync_tokens, current_token->type)){
+            current_token = get_next_token(b);
+        }
+        return 0;
     }
 }
 
 void programa(TokStream* b){
+    SyncTokens sync_tokens = { .num_tokens = 0,
+                            .token_types = NULL};
     bloco(b);
-    match_str(b,".");
+    if(!match_str(b,".", "Expected a period at the end of the program", sync_tokens)) return;
+    //epsilon
 }
 
 void bloco(TokStream* b){
+    SyncTokens sync_tokens = { .num_tokens = 2,
+                                .token_types = (char*[]){"period", "semicolon"}};
     declaracao(b);
-    comando(b);
+    //comando(b);
+    //epsilon
 }
 
 void declaracao(TokStream* b){
+    SyncTokens sync_tokens = { .num_tokens = 7,
+                            .token_types = (char*[]){"keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon"}};
     constante(b);
     variavel(b);
-    procedimento(b);
-    return;
+    //procedimento(b);
+    //epsilon
 }
 
 void constante(TokStream* b){
+    SyncTokens sync_tokens = { .num_tokens = 9,
+                        .token_types = (char*[]){"keyword_var", "keyword_proc", "keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon"}};
     if(!strcmp(current_token->type, "keyword_const")){
-        match_type(b,"keyword_const", NULL);
-        match_type(b,"identifier", "Expected identifier in CONST declaration");
-        match_str(b, "="); //type is rel_op
-        match_type(b, "integer_literal", "Expected number after '=' in CONST declaration");
+        if(!match_type(b,"keyword_const", NULL, sync_tokens)) return;
+        if(!match_type(b,"identifier", "Expected identifier in CONST declaration", sync_tokens)) return;
+        if(!match_str(b, "=", "Use '=' for CONST assignment", sync_tokens)) return;
+        if(!match_type(b, "integer_literal", "Expected number after '=' in CONST declaration", sync_tokens)) return;
         mais_const(b);
-        match_type(b,"semicolon", "Missing ';'");
+        if(!match_type(b,"semicolon", "Missing ';'", sync_tokens)) return;
     }
-    return; //epsilon
+    //epsilon
 }
 
 void mais_const(TokStream* b){
+        SyncTokens sync_tokens = { .num_tokens = 1,
+                            .token_types = (char*[]){"semicolon"}};
     if(!strcmp(current_token->type,"comma")){
-        match_type(b,"comma", NULL);
-        match_type(b,"identifier", "Expected identifier after ',' in CONST declaration");
-        match_str(b, "="); //type is rel_op
-        match_type(b, "integer_literal", "Expected number after '=' in CONST declaration");
+        if(!match_type(b,"comma", NULL, sync_tokens)) return;
+        if(!match_type(b,"identifier", "Expected identifier after ',' in CONST declaration", sync_tokens)) return;
+        if(!match_str(b, "=", "Use '=' for CONST assignment",sync_tokens)) return; //type is rel_op
+        if(!match_type(b, "integer_literal", "Expected number after '=' in CONST declaration", sync_tokens)) return;
         mais_const(b);
     }
-    return;
 }
 
 void variavel(TokStream* b){
+    SyncTokens sync_tokens = { .num_tokens = 8,
+                        .token_types = (char*[]){"keyword_proc", "keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon"}};
     if(!strcmp(current_token->type, "keyword_var")){
-        match_type(b,"keyword_var", NULL);
-        match_type(b,"identifier", "Expected identifier in VAR declaration");
+        if(!match_type(b,"keyword_var", NULL, sync_tokens)) return;
+        if(!match_type(b,"identifier", "Expected identifier in VAR declaration", sync_tokens)) return;
         mais_var(b);
-        match_type(b,"semicolon", "Missing ';'");
+        if(!match_type(b,"semicolon", "Missing ';'", sync_tokens)) return;
     }
-    return;
 }
 
 void mais_var(TokStream* b){
+    SyncTokens sync_tokens = { .num_tokens = 1,
+                    .token_types = (char*[]){"semicolon"}};
     if(!strcmp(current_token->type,"comma")){
-        match_type(b, "comma", NULL);
-        match_type(b,"identifier", "Expected identifier after ',' in VAR declaration");
+        if(!match_type(b, "comma", NULL, sync_tokens)) return;
+        if(!match_type(b,"identifier", "Expected identifier after ',' in VAR declaration", sync_tokens)) return;
         mais_var(b);
     }
-    return;
 }
 
+
+/*
 void procedimento(TokStream* b){
     if(!strcmp(current_token->type, "keyword_proc")){
         match_type(b,"keyword_proc", NULL);
@@ -238,6 +294,6 @@ void relacional(TokStream* b){
     }
     //TODO: should have an error here
 }
-
+*/
 
 

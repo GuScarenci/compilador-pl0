@@ -70,7 +70,7 @@ TokStream* token_stream_init(const char* restrict source_path) {
     OPEN_FILE(tok_stream->src_code, source_path, "r");
     initializeStateMachine(&(tok_stream->dfa));
     loadKeywords("res/keywords.csv", tok_stream);
-    tok_stream->current_line = 0;
+    tok_stream->current_line = 1;
 
     return tok_stream;
 }

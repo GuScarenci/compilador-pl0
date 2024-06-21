@@ -1,6 +1,3 @@
-CONST matheus = 5, gustavo = 13;
-VAR  x, y;
-PROCEDURE cria;
-	VAR a, b;
-	CALL banana;
+CONST m4theus = 5, 3gustavo = 13;
+VAR  3, y;
 .
