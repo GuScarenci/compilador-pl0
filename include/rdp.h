@@ -26,8 +26,6 @@
 
 void rdp(TokStream* b);
 
-int match(TokStream* b, char* comp_token);
-
 void programa();
 
 void bloco();
