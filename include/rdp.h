@@ -21,10 +21,47 @@
 #define __RDP_H__
 
 #include <string.h>
+#include <stdio.h>
+#include <stdbool.h>
 
 #include "lexer.h"
+#include "IO_utils.h"
 
-void rdp(TokStream* b);
+#define SUCCESS 0
+#define IMMEDIATE 1
+#define PARENT 2
+#define SYNC_ERROR 3
+
+#define FIELD_TYPE 0
+#define FIELD_STR 1
+
+#define HANDLE_ERROR(error_message)                                                        \
+    error_count++;                                                                         \
+    fprintf(out_file, ANSI_COLOR_RESET "%s at line %ld: ",                                 \
+                   token_stream->source_path, token_stream->current_line);                 \
+    fprintf(out_file, ANSI_COLOR_RED "error: ");                                           \
+    fprintf(out_file, ANSI_COLOR_RESET error_message "\n");
+    
+
+#define MATCH(field_type, str, error_message)                                              \
+    do {                                                                                   \
+        int32_t result = match_function(field_type, str, immediate_tokens, parent_tokens); \
+        if(result != SUCCESS) {                                                            \
+            HANDLE_ERROR(error_message)                                                    \
+            if(result == PARENT || result == SYNC_ERROR) {                                 \
+                return;                                                                    \
+            }                                                                              \
+        }                                                                                  \
+    } while(false) //this is a way to avoid result redefinition
+
+
+typedef struct sync_tokens {
+    size_t num_tokens;
+    char **token_types;
+} SyncTokens;
+
+
+void rdp(TokStream* b, FILE* out_fp);
 
 int match(TokStream* b, char* comp_token);
 

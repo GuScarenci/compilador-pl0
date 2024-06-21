@@ -29,6 +29,17 @@
 #define STR_GROWTH_FACTOR 2 // Rate at which string grows in readFirstLine
 
 /*
+ * Define codes for ANSI C standart colors.
+ */
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
+/*
  * Returns the first argument passed to a variadic macro.
  */
 #define _GET_FIRST_ARG(FIRST, ...) FIRST
@@ -96,6 +107,12 @@
     memset(p, chr, sizeof(type) * size);
 
 /*
+ * COLORFUL_PRINT prints a text in a color specified bby in user in file fp.
+ */
+#define COLORFUL_PRINT(fp, color, ...)                                         \
+    fprintf(fp, color ##__VA_ARGS__);
+
+/*
  * READ_INPUT does the same as scanf, but it verifies if the input
  * has a valid format and throws an appropriate error message.
  */
@@ -112,6 +129,7 @@
                 _GET_FIRST_ARG(__VA_ARGS__))                                   \
         }                                                                      \
     } while (false)
+
 
 /*
  * fatalError aborts the program with the file and line of the error, and a

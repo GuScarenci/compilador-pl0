@@ -47,8 +47,10 @@ typedef struct keyword_pair_t{
  */
 typedef struct tok_stream_t {
     FILE* src_code;
-    StateMachine dfa;
+    char* source_path;
     size_t current_line;
+
+    StateMachine dfa;
     Keyword* keywords;
     size_t num_keywords;
 } TokStream;
@@ -69,7 +71,7 @@ typedef struct token_pair_t {
  * file whose name is the string pointed to by 'source_path'.
  * The tokens are analysed in conformity to PL/0's grammar.
  */
-TokStream* token_stream_init(const char* restrict source_path);
+TokStream* token_stream_init(const char* source_path);
 
 /*
  * Frees resources utilized by Token Stream.

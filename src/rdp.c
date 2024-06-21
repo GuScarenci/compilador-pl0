@@ -21,28 +21,16 @@
 #include "lexer.h"
 #include "rdp.h"
 
-TokStream* token_stream;
-Token* current_token = NULL;
-size_t error_count = 0;
-
-#define SUCCESS 0
-#define IMMEDIATE 1
-#define PARENT 2
-#define SYNC_ERROR 3
-
-#define FIELD_TYPE 0
-#define FIELD_STR 1
-
-typedef struct sync_tokens
-{
-    size_t num_tokens;
-    char **token_types;
-}SyncTokens;
+static TokStream* token_stream;
+static Token* current_token = NULL;
+static FILE* out_file = NULL;
+static size_t error_count = 0;
 
 
-void rdp(TokStream* b){
+void rdp(TokStream* b, FILE* out_fp){
     token_stream = b;
     current_token = get_next_token(token_stream);
+    out_file = out_fp;
     programa();
     if(error_count == 0)
         printf("SUCCESS!\n");
@@ -68,8 +56,8 @@ int match_function(int field, char* comp_type, SyncTokens immediate_tokens, Sync
         current_token = get_next_token(token_stream);
         //TODO check for lexical errors here
         return SUCCESS;
-    }
-    else{
+
+    } else{
         if((immediate_tokens.num_tokens + parent_tokens.num_tokens) == 0)
             return SYNC_ERROR;
 
@@ -88,21 +76,11 @@ int match_function(int field, char* comp_type, SyncTokens immediate_tokens, Sync
     }
 }
 
-#define match(field_type, str, error_message) \
-do { \
-    int result = match_function(field_type, str, immediate_tokens, parent_tokens);\
-    if(result != SUCCESS){\
-        error_count++;\
-        printf("(%ld): error: %s\n", token_stream->current_line, error_message);\
-        if(result == PARENT || result == SYNC_ERROR) return;\
-    }\
-} while(0) //this is a way to avoid result redefinition
-
 void programa(){
     SyncTokens parent_tokens = {0, NULL};
     SyncTokens immediate_tokens = {0, NULL};
     bloco();
-    match(FIELD_TYPE, "period", "Expected a period at the end of the program");
+    MATCH(FIELD_TYPE, "period", "Expected a period at the end of the program");
     //epsilon
 }
 
@@ -127,21 +105,21 @@ void constante(){
     
     if(!strcmp(current_token->type, "keyword_const")){
         immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        match(FIELD_TYPE, "keyword_const", "Expected CONST declaration");
+        MATCH(FIELD_TYPE, "keyword_const", "Expected CONST declaration");
 
         immediate_tokens = (SyncTokens){1, (char*[]){"rel_op"}};
-        match(FIELD_TYPE, "identifier", "Expected identifier in CONST declaration");
+        MATCH(FIELD_TYPE, "identifier", "Expected identifier in CONST declaration");
 
         immediate_tokens = (SyncTokens){1, (char*[]){"integer_literal"}};
-        match(FIELD_STR, "=", "Use '=' for CONST assignment");
+        MATCH(FIELD_STR, "=", "Use '=' for CONST assignment");
 
         immediate_tokens = (SyncTokens){2, (char*[]){"semicolon", "comma"}};
-        match(FIELD_TYPE, "integer_literal", "Expected number after '=' in CONST declaration");
+        MATCH(FIELD_TYPE, "integer_literal", "Expected number after '=' in CONST declaration");
 
         mais_const();
 
         immediate_tokens = (SyncTokens){0, NULL};
-        match(FIELD_TYPE, "semicolon", "Missing ';'");
+        MATCH(FIELD_TYPE, "semicolon", "Missing ';'");
     }
 }
 
@@ -151,16 +129,16 @@ void mais_const(){
 
     if(!strcmp(current_token->type,"comma")){
         immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        match(FIELD_TYPE, "comma", "Expected ',' in CONST declaration");
+        MATCH(FIELD_TYPE, "comma", "Expected ',' in CONST declaration");
 
         immediate_tokens = (SyncTokens){1, (char*[]){"rel_op"}};
-        match(FIELD_TYPE, "identifier", "Expected identifier after ',' in CONST declaration");
+        MATCH(FIELD_TYPE, "identifier", "Expected identifier after ',' in CONST declaration");
 
         immediate_tokens = (SyncTokens){1, (char*[]){"integer_literal"}};
-        match(FIELD_STR, "=", "Use '=' for CONST assignment");
+        MATCH(FIELD_STR, "=", "Use '=' for CONST assignment");
 
         immediate_tokens = (SyncTokens){2, (char*[]){"semicolon", "comma"}};
-        match(FIELD_TYPE, "integer_literal", "Expected number after '=' in CONST declaration");
+        MATCH(FIELD_TYPE, "integer_literal", "Expected number after '=' in CONST declaration");
 
         mais_const();
     }
@@ -172,15 +150,15 @@ void variavel(){
 
     if(!strcmp(current_token->type, "keyword_var")){
         immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        match(FIELD_TYPE, "keyword_var", "Expected VAR declaration");
+        MATCH(FIELD_TYPE, "keyword_var", "Expected VAR declaration");
 
         immediate_tokens = (SyncTokens){2, (char*[]){"comma", "semicolon"}};
-        match(FIELD_TYPE, "identifier", "Expected identifier in VAR declaration");
+        MATCH(FIELD_TYPE, "identifier", "Expected identifier in VAR declaration");
 
         mais_var();
 
         immediate_tokens = (SyncTokens){0, NULL};
-        match(FIELD_TYPE, "semicolon", "Missing ';'");
+        MATCH(FIELD_TYPE, "semicolon", "Missing ';'");
     }
 }
 
@@ -190,10 +168,10 @@ void mais_var(){
 
     if(!strcmp(current_token->type,"comma")){
         immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        match(FIELD_TYPE, "comma", "Expected ',' in VAR declaration");
+        MATCH(FIELD_TYPE, "comma", "Expected ',' in VAR declaration");
 
         immediate_tokens = (SyncTokens){2, (char*[]){"comma", "semicolon"}};
-        match(FIELD_TYPE, "identifier", "Expected identifier after ',' in VAR declaration");
+        MATCH(FIELD_TYPE, "identifier", "Expected identifier after ',' in VAR declaration");
 
         mais_var();
     }
@@ -206,18 +184,18 @@ void procedimento(){
 
     if(!strcmp(current_token->type, "keyword_proc")){
         immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        match(FIELD_TYPE, "keyword_proc", "Expected PROCEDURE declaration");
+        MATCH(FIELD_TYPE, "keyword_proc", "Expected PROCEDURE declaration");
 
         immediate_tokens = (SyncTokens){1, (char*[]){"semicolon"}};
-        match(FIELD_TYPE, "identifier", "Expected identifier in PROCEDURE declaration");
+        MATCH(FIELD_TYPE, "identifier", "Expected identifier in PROCEDURE declaration");
 
         immediate_tokens = (SyncTokens){9, (char*[]){"keyword_const", "keyword_var", "keyword_proc", "identifier", "keyword_call", "keyword_begin", "keyword_if", "keyword_while", "semicolon"}};
-        match(FIELD_TYPE, "semicolon", "Missing ';'");
+        MATCH(FIELD_TYPE, "semicolon", "Missing ';'");
 
         bloco();
 
         immediate_tokens = (SyncTokens){7, (char*[]){"keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon"}};
-        match(FIELD_TYPE, "semicolon", "Missing ';'");
+        MATCH(FIELD_TYPE, "semicolon", "Missing ';'");
 
         procedimento();
     }
@@ -230,31 +208,31 @@ void procedimento(){
 
     if(!strcmp(current_token->type, "identifier")){
         immediate_tokens = (SyncTokens){1, (char*[]){"rel_op"}};
-        match(FIELD_TYPE, "identifier", "Expected identifier in COMMAND");
+        MATCH(FIELD_TYPE, "identifier", "Expected identifier in COMMAND");
 
         immediate_tokens = (SyncTokens){5, (char*[]){"identifier", "integer_literal", "left_par", "simb_plus", "simb_minus"}};
-        match(FIELD_STR, ":=", "Use ':=' for assignment");
+        MATCH(FIELD_STR, ":=", "Use ':=' for assignment");
 
         expressao();
     } else if (!strcmp(current_token->type, "keyword_call")){
         immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        match(FIELD_TYPE, "keyword_call", "Expected CALL");
+        MATCH(FIELD_TYPE, "keyword_call", "Expected CALL");
 
         immediate_tokens = (SyncTokens){2, (char*[]){"semicolon", "keyword_end"}}; //TODO we need to improve this
-        match(FIELD_TYPE, "identifier", "Expected identifier after CALL");
+        MATCH(FIELD_TYPE, "identifier", "Expected identifier after CALL");
     } else if (!strcmp(current_token->type, "keyword_begin")){
         immediate_tokens = (SyncTokens){8, (char*[]){"keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon", "keyword_end"}}; //TODO define followers
-        match(FIELD_TYPE, "keyword_begin", "Expected BEGIN");
+        MATCH(FIELD_TYPE, "keyword_begin", "Expected BEGIN");
 
         comando();
 
         mais_cmd();
 
         immediate_tokens = (SyncTokens){1, (char*[]){"keyword_end"}}; //TODO define followers
-        match(FIELD_TYPE, "keyword_end", "Expected END in BEGIN");
+        MATCH(FIELD_TYPE, "keyword_end", "Expected END in BEGIN");
     } else if (!strcmp(current_token->type, "keyword_if")){
         immediate_tokens = (SyncTokens){1, (char*[]){"rel_op"}};
-        match(FIELD_TYPE, "keyword_if", "Expected IF");
+        MATCH(FIELD_TYPE, "keyword_if", "Expected IF");
 
         match_type(b, "keyword_if", NULL);
         condicao(b);
