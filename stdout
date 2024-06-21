@@ -1,0 +1,2 @@
+[0mres/teste1.txt at line 1: [31merror: [0mExpected identifier after ',' in CONST declaration
+[0mres/teste1.txt at line 2: [31merror: [0mExpected identifier in VAR declaration
