@@ -35,19 +35,20 @@
 #define FIELD_TYPE 0
 #define FIELD_STR 1
 
-#define HANDLE_ERROR(error_message)                                                        \
+#define HANDLE_ERROR(error_message, error_line)                                            \
     error_count++;                                                                         \
     fprintf(out_file, ANSI_COLOR_RESET "%s at line %ld: ",                                 \
-                   token_stream->source_path, token_stream->current_line);                 \
+                   token_stream->source_path, error_line);                                 \
     fprintf(out_file, ANSI_COLOR_RED "error: ");                                           \
     fprintf(out_file, ANSI_COLOR_RESET error_message "\n");
     
 
 #define MATCH(field_type, str, error_message)                                              \
     do {                                                                                   \
+        size_t error_line = token_stream->current_line;                                    \
         int32_t result = match_function(field_type, str, immediate_tokens, parent_tokens); \
         if(result != SUCCESS) {                                                            \
-            HANDLE_ERROR(error_message)                                                    \
+            HANDLE_ERROR(error_message, error_line)                                        \
             if(result == PARENT || result == SYNC_ERROR) {                                 \
                 return;                                                                    \
             }                                                                              \
@@ -62,8 +63,6 @@ typedef struct sync_tokens {
 
 
 void rdp(TokStream* b, FILE* out_fp);
-
-int match(TokStream* b, char* comp_token);
 
 void programa();
 
