@@ -1,19 +1,10 @@
-PROCEDURE P1;
-VAR a;
+VAR n, f;
 BEGIN
-    a := 2
-END;
-
-PROCEDURE P2;
-VAR b;
-BEGIN
-    CALL P1;
-    b := a * 2
-END;
-
-VAR x;
-
-BEGIN
-    x := 10;
-    CALL P2
+   n := 0;
+   f := 1;
+   WHILE n <> 16 DO
+   BEGIN
+      n := n + 1;
+      f := f * n;
+   END;
 END.
