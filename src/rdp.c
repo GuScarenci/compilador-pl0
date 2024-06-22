@@ -427,9 +427,7 @@ void fator(){
         immediate_tokens = (SyncTokens){0, NULL};
         MATCH(FIELD_TYPE, "right_par", "Missing closing parenthesis in expression");
     }else{
-        //TODO: libardi should add an error here
-        error_count++;
-        printf("(%ld): error: %s\n", token_stream->current_line, "Expected identifier, number or expression");
+        add_error(&error_list, "Expected identifier, number or expression", *current_token);
     }
 }
 
@@ -469,9 +467,7 @@ void relacional(){
     if(!strcmp(current_token->type, "rel_op")){
         MATCH(FIELD_TYPE, "rel_op", "Expected a relational operator");
     }else{
-        //TODO: libardi should add an error here
-        error_count++;
-        printf("(%ld): error: %s\n", token_stream->current_line, "Expected a relational operator");
+        add_error(&error_list, "Expected a relational operator", *current_token);
     }
 }
 
