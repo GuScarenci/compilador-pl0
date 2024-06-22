@@ -226,7 +226,7 @@ void procedimento(){
         immediate_tokens = (SyncTokens){1, (char*[]){SEMICOLON}};
         MATCH(FIELD_TYPE, IDENT, "Expected identifier in PROCEDURE declaration");
 
-        immediate_tokens = (SyncTokens){9, (char*[]){KW_CONST, KW_VAR, KW_PROC, IDENT, KW_CALL, KW_BEGIN, KW_IF, KW_WHILE, SEMICOLON}};
+        immediate_tokens = (SyncTokens){8, (char*[]){KW_CONST, KW_VAR, KW_PROC, IDENT, KW_CALL, KW_BEGIN, KW_IF, KW_WHILE}}; //should have a SEMICOLON here, but we opted not to include it
         MATCH(FIELD_TYPE, SEMICOLON, "Missing ';'");
 
         bloco();
