@@ -24,7 +24,6 @@
 static TokStream* token_stream;
 static Token* current_token = NULL;
 static FILE* out_file = NULL;
-static int error_count = 0;
 static ErrorListHead error_list = {0, NULL};
 
 void add_error(ErrorListHead* error_list, char* error_message, Token error_token){
