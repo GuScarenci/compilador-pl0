@@ -20,103 +20,18 @@
 
 #include "lexer.h"
 #include "rdp.h"
+#include "error_handler.h"
 
 static TokStream* token_stream;
 static Token* current_token = NULL;
 static FILE* out_file = NULL;
-static ErrorListHead error_list = {0, NULL};
-
-void add_error(ErrorListHead* error_list, char* error_message, Token error_token){
-    error_list->error_count++;
-    ErrorListNode* new_error = (ErrorListNode*)malloc(sizeof(ErrorListNode));
-    new_error->error_message = error_message;
-    new_error->error_line = error_token.line;
-    new_error->token_start_pos = error_token.first_char_pos;
-    new_error->token_size = error_token.size;
-    new_error->next = NULL;
-    if(error_list->first_error == NULL)
-        error_list->first_error = new_error;
-    else{
-        ErrorListNode* current = error_list->first_error;
-        while(current->next != NULL)
-            current = current->next;
-        current->next = new_error;
-    }
-}
-
-char* read_line_from_file(const char* filename, size_t line_number) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        perror("Failed to open file");
-        exit(EXIT_FAILURE);
-    }
-
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    size_t current_line = 1;
-
-    while ((read = getline(&line, &len, file)) != -1) {
-        if (current_line == line_number) {
-            fclose(file);
-            return line;
-        }
-        current_line++;
-    }
-
-    fclose(file);
-    free(line); // Line wasn't found, free the memory
-    return NULL;
-}
-
-void print_line_with_highlight(FILE* out_fp, const char* line, size_t start_char, size_t length) {
-    size_t line_len = strlen(line);
-    for (size_t i = 0; i < line_len; i++) {
-        if (i == start_char) {
-            fprintf(out_fp, ANSI_COLOR_RED);
-        }
-        if (i == start_char + length) {
-            fprintf(out_fp, ANSI_COLOR_RESET);
-        }
-        fputc(line[i], out_fp);
-    }
-    fprintf(out_fp, ANSI_COLOR_RESET);
-}
 
 void rdp(TokStream* b, FILE* out_fp){
     token_stream = b;
     current_token = get_next_token(token_stream);
     out_file = out_fp;
     programa();
-    if (error_list.error_count == 0) {
-        fprintf(out_file, "Code compiled successfully!\n");
-    } else {
-        fprintf(out_file, "Code did not compile. ");
-        fprintf(out_file, ANSI_COLOR_RED);
-        fprintf(out_file, "%ld", error_list.error_count);
-        fprintf(out_file, ANSI_COLOR_RESET);
-        fprintf(out_file, " errors found.\n");
-
-        ErrorListNode *current = error_list.first_error;
-        while (current != NULL) {
-            fprintf(out_file, "%s:%ld:%ld:", token_stream->source_path, current->error_line, current->token_start_pos);
-            fprintf(out_file, ANSI_COLOR_RED);
-            fprintf(out_file, " error: ");
-            fprintf(out_file, ANSI_COLOR_RESET);
-            fprintf(out_file, "%s\n", current->error_message);
-
-            fprintf(out_file, ANSI_COLOR_RESET); // Ensure the reset code is printed at the beginning
-            fprintf(out_file, "\t%ld | ", current->error_line);
-            char *source_path = token_stream->source_path;
-            char* line = read_line_from_file(source_path, current->error_line);
-            if (line) {
-                print_line_with_highlight(out_fp, line, current->token_start_pos, current->token_size);
-                free(line); // Free the memory allocated by getline
-            }
-
-            current = current->next;
-        }
-    }
+    print_final_message(out_file);
 }
 
 int part_of(char* string, SyncTokens sync_tokens){
@@ -143,9 +58,9 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
 
         if(current_token->is_error){
             lexical_error = true;
-            add_error(&error_list, current_token->type, *current_token);
+            print_error(out_file, current_token->type, *current_token);
         }else{
-            add_error(&error_list, error_msg, *current_token);
+            print_error(out_file, error_msg, *current_token);
         }
 
         if((immediate_tokens.num_tokens + parent_tokens.num_tokens) == 0)
@@ -218,7 +133,7 @@ void constante(){
 }
 
 void mais_const(){
-        SyncTokens parent_tokens = {1, (char*[]){"semicolon"}};
+    SyncTokens parent_tokens = {1, (char*[]){"semicolon"}};
     SyncTokens immediate_tokens = {0, NULL};
 
     if(!strcmp(current_token->type,"comma")){
@@ -426,7 +341,7 @@ void fator(){
         immediate_tokens = (SyncTokens){0, NULL};
         MATCH(FIELD_TYPE, "right_par", "Missing closing parenthesis in expression");
     }else{
-        add_error(&error_list, "Expected identifier, number or expression", *current_token);
+        print_error(out_file, "Expected identifier, number or expression", *current_token);
     }
 }
 
@@ -466,7 +381,7 @@ void relacional(){
     if(!strcmp(current_token->type, "rel_op")){
         MATCH(FIELD_TYPE, "rel_op", "Expected a relational operator");
     }else{
-        add_error(&error_list, "Expected a relational operator", *current_token);
+        print_error(out_file, "Expected a relational operator", *current_token);
     }
 }
 

@@ -65,10 +65,12 @@ typedef struct tok_stream_t {
 typedef struct token_pair_t {
     char* token_str;
     char* type;
+    bool is_error;
+
+    char *source_path;
     size_t line;
     size_t size;
     size_t first_char_pos;
-    bool is_error;
 } Token;
 
 /*

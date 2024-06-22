@@ -159,9 +159,6 @@ Token* get_next_token(TokStream* tok_stream) {
     }
 
     token->token_str[token_len] = '\0';
-    token->line = tok_stream->current_line;
-    token->size = token_len;
-    token->first_char_pos = tok_stream->current_char_pos - token_real_size;
     token->is_error = (tok_stream->dfa.current_state)->type == error;
 
     char* output = tok_stream->dfa.current_state->output;
@@ -175,7 +172,12 @@ Token* get_next_token(TokStream* tok_stream) {
     }
 
     token->type = strdup(output);
-    tok_stream->dfa.current_state = tok_stream->dfa.initial_state;
 
+    token->source_path = tok_stream->source_path;
+    token->line = tok_stream->current_line;
+    token->size = token_len;
+    token->first_char_pos = tok_stream->current_char_pos - token_real_size;
+
+    tok_stream->dfa.current_state = tok_stream->dfa.initial_state;
     return token;
 }
