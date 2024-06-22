@@ -1,0 +1,6 @@
+CONST hello = 3, gustavo = ;
+VAR cirillo, 57;
+PROCEDURE 637;
+CONST hy = cirillo, thiago = 5;
+VAR 32, gabriel;
+.

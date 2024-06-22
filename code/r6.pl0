@@ -1,0 +1,19 @@
+PROCEDURE P1;
+VAR a;
+BEGIN
+    a := 2
+END;
+
+PROCEDURE P2;
+VAR b;
+BEGIN
+    CALL P1;
+    b := a * 2
+END;
+
+VAR x;
+
+BEGIN
+    x := 10;
+    CALL P2
+END.

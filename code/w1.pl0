@@ -1,0 +1,10 @@
+CONST x = 5;
+PROCEDURE Double;
+BEGIN
+  CALL 17;
+END;
+
+BEGIN
+  a := x + y;
+  CALL Double;
+END.
