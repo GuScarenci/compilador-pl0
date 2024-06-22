@@ -40,7 +40,7 @@
     do {                                                                                   \
         int32_t result = match_function(field_type, str, error_message, immediate_tokens, parent_tokens); \
         if(result == PARENT) return;                                                       \
-        if(result == SYNC_ERROR) exit(-1);                                                 \
+        if(result == SYNC_ERROR) exit(EXIT_FAILURE);                                       \
     } while(false) //this is a way to avoid result redefinition
 
 typedef struct sync_tokens {
