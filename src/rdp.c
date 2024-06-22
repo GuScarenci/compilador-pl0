@@ -90,8 +90,13 @@ void rdp(TokStream* b, FILE* out_fp){
     out_file = out_fp;
     programa();
     if(error_list.error_count == 0){
-        printf("SUCCESS!\n");
+        printf("Code compiled successfully!\n");
     }else{
+        printf("Code did not compile. ");
+        printf(ANSI_COLOR_RED);
+        printf("%ld", error_list.error_count);
+        printf(ANSI_COLOR_RESET);
+        printf(" errors found.\n");
         ErrorListNode *current = error_list.first_error;
         while(current != NULL){
             printf("%s:%ld:%ld:", token_stream->source_path, current->error_line, current->token_start_pos);
