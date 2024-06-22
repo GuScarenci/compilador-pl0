@@ -1,5 +1,5 @@
 # Compilador de PL-0
-Esse projeto foi feito para a disciplina SCC0605 - Teoria da Computação e Compiladores. Os integrantes do grupo são:
+Esse projeto, juntamente com toda sua documentação, foi feito para a disciplina SCC0605 - Teoria da Computação e Compiladores. Os integrantes do grupo são:
 - Artur Brenner Weber. NUSP: 12675451.
 - Gabriel Franceschi Libardi. NUSP: 11760739.
 - Guilherme Castanon Silva Pereira. NUSP: 11801140.
@@ -16,29 +16,29 @@ Para executar o código, basta chamar a diretiva `run` do `Makefile` e passar o 
 ```
 make run ARGS="<source_file> <output_file>"
 ```
-em que <source_file> é o caminho para o código fonte (que é um arquivo de texto) e <output_file> é a saída pedida com a tabela de tokens e suas respectivas classes. A execução do programa sobrescreve todo o conteúdo de <output_file> com a saída do analisado léxico. A diretiva `run` também compila automaticamente o código se o executável não foi encontrado.
+em que <source_file> é o caminho para o código fonte (que é um arquivo de texto) e <output_file> é a saída pedida com mensagens de sucesso ou erro de compilação, com os erros de compilação de uma maneira amigável e informativa caso haja erro no programa. A execução do programa sobrescreve todo o conteúdo de <output_file> com a saída do analisado léxico. A diretiva `run` também compila automaticamente o código se o executável não foi encontrado. 
+
+Para a melhor saída de erros, é recomendado que a saída seja o terminal `stdout` ou que ao jogar para a saída para um arquivo de texto, se faça um `cat`do arquivo para o terminal. Visto que a saída do programa faz destaque de erros e warnings com cores.
 
 ## #TODO List
 - [x] Analisador Léxico.
-- [ ] Analisador Sintático.
+- [x] Analisador Sintático.
 - [ ] Analisador Semântico.
 - [ ] Gerador de IR.
 - [ ] Otimizador de código.
 - [ ] Gerador de código de máquina.
 
+#### Estrutura de Pastas
+Todo o seu código deve ser colocado dentro da pasta _src/_ e você pode criar qualquer número de diretórios necessários dentro dela.
+Você também pode criar pastas como _res/_, _scripts/_ na pasta raiz para auxiliar.
 
-#### Folder structure
-All your code should be placed inside _src/_ and you can create any numbers of directories needed inside it.
-You can also create folders such as _res/_, _scripts/_ in the root folder to aid you.
+#### Depuração
 
-#### Debugging
+Para usar os recursos de depuração que este espaço de trabalho fornece, você precisa instalar a [extensão C/C++ da Microsoft](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools).
 
-In order to use the debugging features this workspace provides you need to install the [C/C++ extension from Microsoft](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools).
+Para executar seu código sem depuração, você pode usar ``` Ctrl + F5 ``` e para executar seu código com as ferramentas de depuração e pontos de interrupção, use ``` F5 ```.
 
-To run your code without debugging you can use ``` Ctrl + F5 ``` and to run your code with the debugging tools and breakpoints use ``` F5 ```.
-
-
-To quickly test run your code without using vscode's debug features you can run the task **C: gcc build and run project** or you can configure a keybind in your _keybindings.json_ using:
+Para testar rapidamente seu código sem usar os recursos de depuração do vscode, você pode executar a tarefa **C: gcc build and run project** ou pode configurar um atalho em seu _keybindings.json_ usando:
 
 ```
     {
@@ -49,7 +49,8 @@ To quickly test run your code without using vscode's debug features you can run 
     },
 ```
 
-There's also a task to create a _.c_ and _.h_ files with a base code, you can run it with **C: new .h and .c file**  or you can configure a keybind in your _keybindings.json_ using:
+Há também uma tarefa para criar arquivos _.c_ e _.h_ com um código base. Você pode executá-la com **C: new .h and .c file** ou pode configurar um atalho em seu _keybindings.json_ usando:
+
 ```
     {
         "key": "alt+d",
