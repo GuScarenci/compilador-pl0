@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <errno.h>
 
 #include "lexer.h"
@@ -68,6 +69,7 @@ TokStream* token_stream_init(const char* restrict source_path) {
 
     XCALLOC(TokStream, tok_stream, 1)
     OPEN_FILE(tok_stream->src_code, source_path, "r");
+    tok_stream->source_path = strdup(source_path);
     initializeStateMachine(&(tok_stream->dfa));
     loadKeywords("res/keywords.csv", tok_stream);
     tok_stream->current_line = 1;

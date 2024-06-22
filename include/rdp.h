@@ -21,26 +21,62 @@
 #define __RDP_H__
 
 #include <string.h>
+#include <stdio.h>
+#include <stdbool.h>
 
 #include "lexer.h"
+#include "IO_utils.h"
 
-void rdp(TokStream* b);
+#define SUCCESS 0
+#define IMMEDIATE 1
+#define PARENT 2
+#define SYNC_ERROR 3
 
-int match(TokStream* b, char* comp_token);
+#define FIELD_TYPE 0
+#define FIELD_STR 1
 
-void programa(TokStream* b);
+#define HANDLE_ERROR(error_message, error_line)                                            \
+    error_count++;                                                                         \
+    fprintf(out_file, ANSI_COLOR_RESET "%s at line %ld: ",                                 \
+                   token_stream->source_path, error_line);                                 \
+    fprintf(out_file, ANSI_COLOR_RED "error: ");                                           \
+    fprintf(out_file, ANSI_COLOR_RESET error_message "\n");
+    
 
-void bloco(TokStream* b);
+#define MATCH(field_type, str, error_message)                                              \
+    do {                                                                                   \
+        size_t error_line = token_stream->current_line;                                    \
+        int32_t result = match_function(field_type, str, immediate_tokens, parent_tokens); \
+        if(result != SUCCESS) {                                                            \
+            HANDLE_ERROR(error_message, error_line)                                        \
+            if(result == PARENT || result == SYNC_ERROR) {                                 \
+                return;                                                                    \
+            }                                                                              \
+        }                                                                                  \
+    } while(false) //this is a way to avoid result redefinition
 
-void declaracao(TokStream* b);
 
-void constante(TokStream* b);
+typedef struct sync_tokens {
+    size_t num_tokens;
+    char **token_types;
+} SyncTokens;
 
-void mais_const(TokStream* b);
 
-void variavel(TokStream* b);
+void rdp(TokStream* b, FILE* out_fp);
 
-void mais_var(TokStream* b);
+void programa();
+
+void bloco();
+
+void declaracao();
+
+void constante();
+
+void mais_const();
+
+void variavel();
+
+void mais_var();
 
 void procedimento();
 
