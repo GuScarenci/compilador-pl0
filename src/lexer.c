@@ -99,85 +99,85 @@ Token* get_next_token(TokStream* tok_stream) {
         ABORT_PROGRAM("Vacuous token stream");
     }
 
-    size_t token_buff_len = INIT_TOKEN_LEN;
-    size_t token_len = 0;
-    size_t token_real_size = 0;
-    Token* token;
-    XALLOC(Token, token, 1)
-    XALLOC(char, token->token_str, token_buff_len)
-
-    StateTransition* transition;
-    while (((tok_stream->dfa.current_state)->type != reeturn) &&
-           ((tok_stream->dfa.current_state)->type != error)) {
-        char next_char = fgetc(tok_stream->src_code);
-        tok_stream->current_char_pos++;
-        token_real_size++;
-
-        if (feof(tok_stream->src_code)) {
+    Token* token = NULL;
+    char *output = '\0';
+    do{
+        if(token != NULL){
             free(token->token_str);
+            free(token->type);
             free(token);
-            return NULL;
-        }
-        transition = getNextState(tok_stream->dfa.current_state, next_char);
-        if (transition == NULL) {
-            ABORT_PROGRAM("Reached undefined transition. Please define all transitions.")
         }
 
-        (tok_stream->dfa).current_state = getState(&tok_stream->dfa, transition->nextState);
+        size_t token_buff_len = INIT_TOKEN_LEN;
+        size_t token_len = 0;
+        size_t token_real_size = 0;
+        XALLOC(Token, token, 1)
+        XALLOC(char, token->token_str, token_buff_len)
+        token->first_char_pos = 0;
 
-        if (transition->shift == GO_BACK) {
-            fseek(tok_stream->src_code, -1, SEEK_CUR); // Head goes backwards.
-        } else {
-            if (token_len + 1 == token_buff_len) {
-                token_buff_len *= TOKEN_GROWTH_FACTOR;
-                XREALLOC(char, token->token_str, token_buff_len)
+        StateTransition* transition;
+        while (((tok_stream->dfa.current_state)->type != reeturn) &&
+            ((tok_stream->dfa.current_state)->type != error)) {
+            char next_char = fgetc(tok_stream->src_code);
+            tok_stream->current_char_pos++;
+            token_real_size++;
+
+            if (feof(tok_stream->src_code)) {
+                free(token->token_str);
+                free(token);
+                return NULL;
+            }
+            transition = getNextState(tok_stream->dfa.current_state, next_char);
+            if (transition == NULL) {
+                ABORT_PROGRAM("Reached undefined transition. Please define all transitions.")
             }
 
-            if(!isWhitespace(next_char)) { // Ignore whitespace and newline characters
-                token->token_str[token_len] = next_char;
-                token_len++;
-            }else{
-                if(next_char == '\n'){
-                    tok_stream->current_line++;
-                    tok_stream->current_char_pos = 0;
+            (tok_stream->dfa).current_state = getState(&tok_stream->dfa, transition->nextState);
+
+            if (transition->shift == GO_BACK) {
+                fseek(tok_stream->src_code, -1, SEEK_CUR); // Head goes backwards.
+            } else {
+                if (token_len + 1 == token_buff_len) {
+                    token_buff_len *= TOKEN_GROWTH_FACTOR;
+                    XREALLOC(char, token->token_str, token_buff_len)
+                }
+
+                if(!isWhitespace(next_char)) { // Ignore whitespace and newline characters
+                    token->token_str[token_len] = next_char;
+                    token_len++;
+                }else{
+                    if(next_char == '\n'){
+                        tok_stream->current_line++;
+                        tok_stream->current_char_pos = -1;
+                    }
+                }
+            }
+
+            if((tok_stream->dfa.current_state)->output == NULL)
+                continue;
+        }
+        token->token_str[token_len] = '\0';
+        token->is_error = (tok_stream->dfa.current_state)->type == error;
+
+        output = tok_stream->dfa.current_state->output;
+        if(strcmp(tok_stream->dfa.current_state->output, "identifier") == 0) {
+            for (size_t i = 0; i < tok_stream->num_keywords; i++) {
+                if (strcmp(token->token_str, tok_stream->keywords[i].keyword) == 0) {
+                    output = tok_stream->keywords[i].type;
+                    break;
                 }
             }
         }
+        token->type = strdup(output);
 
-        if((tok_stream->dfa.current_state)->output == NULL)
-            continue;
+        token->source_path = tok_stream->source_path;
+        token->line = tok_stream->current_line;
+        token->size = token_len;
+        token->first_char_pos = tok_stream->current_char_pos - token_len;
 
-        if(strcmp((tok_stream->dfa.current_state)->output, "comment") == 0) {
-            // Ignore comments
-            free(token->token_str);
-            free(token);
-            token_buff_len = INIT_TOKEN_LEN;
-            token_len = 0;
-            XALLOC(Token, token, 1)
-            XALLOC(char, token->token_str, token_buff_len)
-        }
-    }
+        tok_stream->dfa.current_state = tok_stream->dfa.initial_state;
 
-    token->token_str[token_len] = '\0';
-    token->is_error = (tok_stream->dfa.current_state)->type == error;
+    }while(strcmp(output, "comment") == 0);
 
-    char* output = tok_stream->dfa.current_state->output;
-    if(strcmp(tok_stream->dfa.current_state->output, "identifier") == 0) {
-        for (size_t i = 0; i < tok_stream->num_keywords; i++) {
-            if (strcmp(token->token_str, tok_stream->keywords[i].keyword) == 0) {
-                output = tok_stream->keywords[i].type;
-                break;
-            }
-        }
-    }
-
-    token->type = strdup(output);
-
-    token->source_path = tok_stream->source_path;
-    token->line = tok_stream->current_line;
-    token->size = token_len;
-    token->first_char_pos = tok_stream->current_char_pos - token_real_size;
-
-    tok_stream->dfa.current_state = tok_stream->dfa.initial_state;
     return token;
 }
