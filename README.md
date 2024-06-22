@@ -16,7 +16,8 @@ Para executar o código, basta chamar a diretiva `run` do `Makefile` e passar o 
 ```
 make run ARGS="<source_file> <output_file>"
 ```
-em que <source_file> é o caminho para o código fonte (que é um arquivo de texto) e <output_file> é a saída pedida com mensagens de sucesso ou erro de compilação, com os erros de compilação de uma maneira amigável e informativa caso haja erro no programa. A execução do programa sobrescreve todo o conteúdo de <output_file> com a saída do analisado léxico. A diretiva `run` também compila automaticamente o código se o executável não foi encontrado. 
+
+em que <source_file> é o caminho para o código fonte (que é um arquivo de texto) e <output_file> é a saída pedida com mensagens de sucesso ou erro de compilação, com os erros de compilação de uma maneira amigável e informativa caso haja erro no programa. A execução do programa sobrescreve todo o conteúdo de <output_file> com a saída do *parser*. A diretiva `run` também compila automaticamente o código se o executável não foi encontrado. 
 
 Para a melhor saída de erros, é recomendado que a saída seja o terminal `stdout` ou que ao jogar para a saída para um arquivo de texto, se faça um `cat`do arquivo para o terminal. Visto que a saída do programa faz destaque de erros e warnings com cores.
 
@@ -30,10 +31,9 @@ Para a melhor saída de erros, é recomendado que a saída seja o terminal `stdo
 
 #### Estrutura de Pastas
 Todo o seu código deve ser colocado dentro da pasta _src/_ e você pode criar qualquer número de diretórios necessários dentro dela.
-Você também pode criar pastas como _res/_, _scripts/_ na pasta raiz para auxiliar.
+Você também pode criar pastas como _res/_, _scripts/_ na pasta raiz para auxiliar. Exemplos de código para teste estão no diretório _code/_, e os seus nomes seguem a convenção de _code/r\[numero\].pl0_ serem códigos válidos, e _code\[numero\].pl0 serem programas inválidos.
 
 #### Depuração
-
 Para usar os recursos de depuração que este espaço de trabalho fornece, você precisa instalar a [extensão C/C++ da Microsoft](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools).
 
 Para executar seu código sem depuração, você pode usar ``` Ctrl + F5 ``` e para executar seu código com as ferramentas de depuração e pontos de interrupção, use ``` F5 ```.
