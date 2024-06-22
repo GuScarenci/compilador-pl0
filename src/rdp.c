@@ -65,12 +65,18 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
         if(current_token != NULL && current_token->is_error){
             print_error(out_file, current_token->type, *current_token);
             while(current_token != NULL){
-                if(part_of(current_token->type, immediate_tokens))
+                if(part_of(current_token->type, immediate_tokens)) {
+                    FREE_TOKEN(tok_buff);
                     return IMMEDIATE;
-                if(part_of(current_token->type, parent_tokens))
+                }
+                if(part_of(current_token->type, parent_tokens)) {
+                    FREE_TOKEN(tok_buff);
                     return PARENT;
+                }
 
+                Token* tok_buff = current_token;
                 current_token = get_next_token(token_stream);
+                FREE_TOKEN(tok_buff);
             }
         }
 
@@ -80,10 +86,7 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
             exit(EXIT_FAILURE);
         }
 
-        free(tok_buff->token_str);
-        free(tok_buff->type);
-        free(tok_buff->source_path);
-        free(tok_buff);
+        FREE_TOKEN(tok_buff);
         return SUCCESS;
     } else{
         print_error(out_file, error_msg, *current_token);

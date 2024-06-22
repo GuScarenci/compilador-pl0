@@ -43,6 +43,12 @@
         if(result == SYNC_ERROR) exit(EXIT_FAILURE);                                       \
     } while(false) //this is a way to avoid result redefinition
 
+#define FREE_TOKEN(token)                                                                  \
+    free(token->token_str);                                                                \
+    free(token->type);                                                                     \
+    free(token->source_path);                                                              \
+    free(token);                                                                           \
+
 typedef struct sync_tokens {
     size_t num_tokens;
     char **token_types;
