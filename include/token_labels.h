@@ -11,6 +11,7 @@
 #define KW_CONST "keyword_const"
 #define KW_THEN "keyword_then"
 #define KW_DO "keyword_do"
+#define KW_ODD "keyword_odd"
 
 #define IDENT "identifier"
 #define PERIOD "period"
