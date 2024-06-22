@@ -374,7 +374,10 @@ void condicao(){
     SyncTokens parent_tokens = {3, (char*[]){KW_THEN, KW_DO}};
     SyncTokens immediate_tokens = {0, NULL};
     if(!strcmp(current_token->type, KW_ODD)){
+        immediate_tokens = (SyncTokens){5, (char*[]){IDENT, INT, LEFTPAR, PLUS, MINUS}};
         MATCH(FIELD_TYPE, KW_ODD, "Expected ODD keyword");
+
+        expressao();
     }else{
         expressao();
         relacional();
