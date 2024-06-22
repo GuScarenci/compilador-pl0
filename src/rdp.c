@@ -28,11 +28,15 @@ static FILE* out_file = NULL;
 
 void rdp(TokStream* b, FILE* out_fp){
     token_stream = b;
-    current_token = get_next_token(token_stream);
     out_file = out_fp;
-    programa();
-    if(current_token != NULL){
-        print_warning(out_file, "Unexpected token at the end of the program", *current_token);
+    current_token = get_next_token(token_stream);
+    if(current_token == NULL){
+        print_message(out_file, "Empty program", ANSI_COLOR_RED);
+    }else{
+        programa();
+        if(current_token != NULL){
+            print_warning(out_file, "Unexpected token at the end of the program", *current_token);
+        }
     }
     print_final_message(out_file);
 }

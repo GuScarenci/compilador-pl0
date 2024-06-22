@@ -42,6 +42,13 @@ void print_line_with_highlight(FILE* out_fp, const char* line, size_t start_char
     fprintf(out_fp, ANSI_COLOR_RESET);
 }
 
+void print_message(FILE *out_file, char* error_message, char *color){
+    error_count++;
+    fprintf(out_file, "%s", color);
+    fprintf(out_file, "%s\n", error_message);
+    fprintf(out_file, ANSI_COLOR_RESET);
+}
+
 void print_error(FILE *out_file, char* error_message, Token error_token){
     error_count++;
     fprintf(out_file, "%s:%ld:%ld:", error_token.source_path, error_token.line, error_token.first_char_pos);

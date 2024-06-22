@@ -8,6 +8,8 @@
 #ifndef __ERROR_HANDLER_H__
 #define __ERROR_HANDLER_H__
 
+void print_message(FILE *out_file, char* message, char *color);
+
 void print_error(FILE *out_file, char* error_message, Token error_line);
 
 void print_warning(FILE *out_file, char *warning_message, Token warning_token);
