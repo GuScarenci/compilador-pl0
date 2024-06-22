@@ -40,7 +40,11 @@
     do {                                                                                   \
         int32_t result = match_function(field_type, str, error_message, immediate_tokens, parent_tokens); \
         if(result == PARENT) return;                                                       \
-        if(result == SYNC_ERROR) exit(EXIT_FAILURE);                                       \
+        if(result == SYNC_ERROR) {\
+            print_message(out_file, "Erro de sincronização", ANSI_COLOR_RED);\
+            print_final_message(out_file);       \
+            exit(EXIT_FAILURE);  \
+        }                                     \
     } while(false) //this is a way to avoid result redefinition
 
 #define FREE_TOKEN(token)                                                                  \
