@@ -68,6 +68,7 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
             exit(EXIT_FAILURE);
         }
 
+        free(tok_buff);
         return SUCCESS;
     } else{
         bool lexical_error = false;
