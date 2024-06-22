@@ -33,12 +33,13 @@ void rdp(TokStream* b, FILE* out_fp){
     current_token = get_next_token(token_stream);
     if(current_token == NULL){
         print_message(out_file, "Empty program", ANSI_COLOR_RED);
-    }else{
+    } else {
         programa();
         if(current_token != NULL){
             print_warning(out_file, "Unexpected token at the end of the program", *current_token);
         }
     }
+
     print_final_message(out_file);
 }
 
@@ -59,7 +60,15 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
         match_expected = !strcmp(current_token->token_str, comp_type);
 
     if(match_expected){
+        Token* tok_buff = current_token;
         current_token = get_next_token(token_stream);
+
+        if (strcmp(comp_type, PERIOD) && current_token == NULL) {
+            print_error(out_file, "Program ended unexpectedly", *tok_buff);
+            print_final_message(out_file);
+            exit(EXIT_FAILURE);
+        }
+
         return SUCCESS;
     } else{
         bool lexical_error = false;
