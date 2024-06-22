@@ -88,6 +88,7 @@ void token_stream_free(TokStream** tok_stream) {
     }
 
     free((*tok_stream)->keywords);
+    free((*tok_stream)->source_path);
     freeStateMachine(&((*tok_stream)->dfa));
     free(*tok_stream);
 
@@ -170,7 +171,7 @@ Token* get_next_token(TokStream* tok_stream) {
         }
         token->type = strdup(output);
 
-        token->source_path = tok_stream->source_path;
+        token->source_path = strdup(tok_stream->source_path);
         token->line = tok_stream->current_line;
         token->size = token_len;
         token->first_char_pos = tok_stream->current_char_pos - token_len;
