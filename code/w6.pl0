@@ -4,7 +4,7 @@ VAR a;
 BEGIN
     a := a + 1;
 END;
-
+{erro nao pode ter declaracao aqui}
 VAR x;
 
 BEGIN
