@@ -68,6 +68,9 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
             exit(EXIT_FAILURE);
         }
 
+        free(tok_buff->token_str);
+        free(tok_buff->type);
+        free(tok_buff->source_path);
         free(tok_buff);
         return SUCCESS;
     } else{
