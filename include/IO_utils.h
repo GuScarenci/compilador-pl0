@@ -96,10 +96,16 @@
 // usually, this would call ABORT_PROGRAM, however, because of runcodes test
 // cases, a simple printf and a silent exit were used.
 #define OPEN_FILE(file_pointer, filename, mode)                                \
-    (file_pointer) = fopen((filename), (mode));                                \
-    if ((file_pointer) == NULL) {                                              \
-        ABORT_PROGRAM("fopen: unable to open %s", filename);                                                         \
-    }
+    do {                                                                       \
+        if (strcmp((filename), "stdout") == 0) {                               \
+            (file_pointer) = stdout;                                           \
+        } else {                                                               \
+            (file_pointer) = fopen((filename), (mode));                        \
+            if ((file_pointer) == NULL) {                                      \
+                ABORT_PROGRAM("fopen: unable to open %s", (filename));          \
+            }                                                                  \
+        }                                                                      \
+    } while (0);
 
 // MEMSET_ALLOC does the same as XALLOC, but it initializes all bytes to chr
 #define MEMSET_ALLOC(type, p, size, chr)                                       \

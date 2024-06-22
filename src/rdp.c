@@ -70,18 +70,18 @@ char* read_line_from_file(const char* filename, size_t line_number) {
     return NULL;
 }
 
-void print_line_with_highlight(const char* line, size_t start_char, size_t length) {
+void print_line_with_highlight(FILE* out_fp, const char* line, size_t start_char, size_t length) {
     size_t line_len = strlen(line);
     for (size_t i = 0; i < line_len; i++) {
         if (i == start_char) {
-            printf(ANSI_COLOR_RED);
+            fprintf(out_fp, ANSI_COLOR_RED);
         }
         if (i == start_char + length) {
-            printf(ANSI_COLOR_RESET);
+            fprintf(out_fp, ANSI_COLOR_RESET);
         }
-        putchar(line[i]);
+        fputc(line[i], out_fp);
     }
-    printf(ANSI_COLOR_RESET); // Ensure the reset code is printed at the end
+    fprintf(out_fp, ANSI_COLOR_RESET);
 }
 
 void rdp(TokStream* b, FILE* out_fp){
@@ -89,31 +89,32 @@ void rdp(TokStream* b, FILE* out_fp){
     current_token = get_next_token(token_stream);
     out_file = out_fp;
     programa();
-    if(error_list.error_count == 0){
-        printf("Code compiled successfully!\n");
-    }else{
-        printf("Code did not compile. ");
-        printf(ANSI_COLOR_RED);
-        printf("%ld", error_list.error_count);
-        printf(ANSI_COLOR_RESET);
-        printf(" errors found.\n");
-        ErrorListNode *current = error_list.first_error;
-        while(current != NULL){
-            printf("%s:%ld:%ld:", token_stream->source_path, current->error_line, current->token_start_pos);
-            printf(ANSI_COLOR_RED);
-            printf(" error: ");
-            printf(ANSI_COLOR_RESET);
-            printf("%s\n", current->error_message);
+    if (error_list.error_count == 0) {
+        fprintf(out_file, "Code compiled successfully!\n");
+    } else {
+        fprintf(out_file, "Code did not compile. ");
+        fprintf(out_file, ANSI_COLOR_RED);
+        fprintf(out_file, "%ld", error_list.error_count);
+        fprintf(out_file, ANSI_COLOR_RESET);
+        fprintf(out_file, " errors found.\n");
 
-            printf(ANSI_COLOR_RESET); // Ensure the reset code is printed at the beginning
-            printf("\t%ld | ", current->error_line);
+        ErrorListNode *current = error_list.first_error;
+        while (current != NULL) {
+            fprintf(out_file, "%s:%ld:%ld:", token_stream->source_path, current->error_line, current->token_start_pos);
+            fprintf(out_file, ANSI_COLOR_RED);
+            fprintf(out_file, " error: ");
+            fprintf(out_file, ANSI_COLOR_RESET);
+            fprintf(out_file, "%s\n", current->error_message);
+
+            fprintf(out_file, ANSI_COLOR_RESET); // Ensure the reset code is printed at the beginning
+            fprintf(out_file, "\t%ld | ", current->error_line);
             char *source_path = token_stream->source_path;
             char* line = read_line_from_file(source_path, current->error_line);
-            print_line_with_highlight(line, current->token_start_pos, current->token_size);
+            if (line) {
+                print_line_with_highlight(out_fp, line, current->token_start_pos, current->token_size);
+                free(line); // Free the memory allocated by getline
+            }
 
-            fprintf(out_file, "%s at line %ld: ", token_stream->source_path, current->error_line); 
-            fprintf(out_file, "error: "); 
-            fprintf(out_file, "%s \n", current->error_message);
             current = current->next;
         }
     }
