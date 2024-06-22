@@ -36,7 +36,7 @@ void rdp(TokStream* b, FILE* out_fp){
     }else{
         programa();
         if(current_token != NULL){
-            print_warning(out_file, "Unexpected token at the end of the program", *current_token);
+            print_warning(out_file, "Unexpected token after program ending.", *current_token);
         }
     }
     print_final_message(out_file);
