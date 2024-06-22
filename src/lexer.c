@@ -110,18 +110,16 @@ Token* get_next_token(TokStream* tok_stream) {
         }
 
         size_t token_buff_len = INIT_TOKEN_LEN;
+        bool is_new_token = true;
         size_t token_len = 0;
-        size_t token_real_size = 0;
         XALLOC(Token, token, 1)
         XALLOC(char, token->token_str, token_buff_len)
-        token->first_char_pos = 0;
 
         StateTransition* transition;
         while (((tok_stream->dfa.current_state)->type != reeturn) &&
             ((tok_stream->dfa.current_state)->type != error)) {
             char next_char = fgetc(tok_stream->src_code);
             tok_stream->current_char_pos++;
-            token_real_size++;
 
             if (feof(tok_stream->src_code)) {
                 free(token->token_str);
@@ -138,7 +136,6 @@ Token* get_next_token(TokStream* tok_stream) {
             if (transition->shift == GO_BACK) {
                 fseek(tok_stream->src_code, -1, SEEK_CUR); // Head goes backwards.
                 tok_stream->current_char_pos--;
-                token_real_size--;
             } else {
                 if (token_len + 1 == token_buff_len) {
                     token_buff_len *= TOKEN_GROWTH_FACTOR;
@@ -148,10 +145,16 @@ Token* get_next_token(TokStream* tok_stream) {
                 if(!isWhitespace(next_char)) { // Ignore whitespace and newline characters
                     token->token_str[token_len] = next_char;
                     token_len++;
+
+                    if(is_new_token){
+                        token->first_char_pos = tok_stream->current_char_pos - 1;
+                        is_new_token = false;
+                    }
                 }else{
                     if(next_char == '\n'){
                         tok_stream->current_line++;
-                        tok_stream->current_char_pos = -1;
+                        tok_stream->current_char_pos = 0;
+                        token_len = 0;
                     }
                 }
             }
@@ -176,7 +179,6 @@ Token* get_next_token(TokStream* tok_stream) {
         token->source_path = strdup(tok_stream->source_path);
         token->line = tok_stream->current_line;
         token->size = token_len;
-        token->first_char_pos = (tok_stream->current_char_pos) - token_len;
 
         tok_stream->dfa.current_state = tok_stream->dfa.initial_state;
 
