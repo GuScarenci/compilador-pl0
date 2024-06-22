@@ -60,33 +60,42 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
 
     if(match_expected){
         current_token = get_next_token(token_stream);
+
+        if(current_token != NULL && current_token->is_error){
+            print_error(out_file, current_token->type, *current_token);
+            while(current_token != NULL){
+                if(part_of(current_token->type, parent_tokens))
+                    return PARENT;
+
+                current_token = get_next_token(token_stream);
+            }
+        }
+
         return SUCCESS;
     } else{
-        bool lexical_error = false;
-
-        if(current_token->is_error){
-            lexical_error = true;
-            print_error(out_file, current_token->type, *current_token);
-        }else{
-            print_error(out_file, error_msg, *current_token);
-        }
+        print_error(out_file, error_msg, *current_token);
 
         if((immediate_tokens.num_tokens + parent_tokens.num_tokens) == 0)
             return SYNC_ERROR;
 
         while(current_token != NULL){
-            if(part_of(current_token->type, immediate_tokens)){
-                if(lexical_error)
-                    return LEXICAL_ERROR;
+            if(part_of(current_token->type, immediate_tokens))
                 return IMMEDIATE;
-            }
-            if(part_of(current_token->type, parent_tokens)){
-                if(lexical_error)
-                    return LEXICAL_ERROR;
+
+            if(part_of(current_token->type, parent_tokens))
                 return PARENT;
-            }
 
             current_token = get_next_token(token_stream);
+            if(current_token != NULL && current_token->is_error){
+                print_error(out_file, current_token->type, *current_token);
+                while(current_token != NULL){
+                    if(part_of(current_token->type, parent_tokens))
+                        return PARENT;
+
+                    current_token = get_next_token(token_stream);
+                }
+                return SYNC_ERROR;
+            }
         }
         return SYNC_ERROR;
     }
