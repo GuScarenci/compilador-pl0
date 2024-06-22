@@ -1,5 +1,5 @@
 /************************************************************
-*             Trabalho 1 - SCC0605                          *
+*             Trabalho 2 - SCC0605                          *
 *                                                           *
 *      Nome: Artur Brenner Weber                            *
 *      nUSP: 12675451                                       *

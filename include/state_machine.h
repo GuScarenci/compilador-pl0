@@ -1,5 +1,5 @@
 /************************************************************
-*             Trabalho 1 - SCC0605                          *
+*             Trabalho 2 - SCC0605                          *
 *                                                           *
 *      Nome: Artur Brenner Weber                            *
 *      nUSP: 12675451                                       *
@@ -11,7 +11,7 @@
 *      nUSP: 12547792                                       *
 *      Nome: Matheus Henrique Dias Cirillo                  *
 *      nUSP: 12547750                                       *
-*      Data de última atualizacao: 19/5/2024                *
+*      Data de última atualizacao: 22/06/2024               *
 *      Ambiente: VSCode 1.89.1                              *
 *                                                           *
 *           Arquivo state_machine.c                         *
