@@ -137,6 +137,8 @@ Token* get_next_token(TokStream* tok_stream) {
 
             if (transition->shift == GO_BACK) {
                 fseek(tok_stream->src_code, -1, SEEK_CUR); // Head goes backwards.
+                tok_stream->current_char_pos--;
+                token_real_size--;
             } else {
                 if (token_len + 1 == token_buff_len) {
                     token_buff_len *= TOKEN_GROWTH_FACTOR;
@@ -174,7 +176,7 @@ Token* get_next_token(TokStream* tok_stream) {
         token->source_path = strdup(tok_stream->source_path);
         token->line = tok_stream->current_line;
         token->size = token_len;
-        token->first_char_pos = tok_stream->current_char_pos - token_len;
+        token->first_char_pos = (tok_stream->current_char_pos) - token_len;
 
         tok_stream->dfa.current_state = tok_stream->dfa.initial_state;
 
