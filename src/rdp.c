@@ -37,6 +37,7 @@ void rdp(TokStream* b, FILE* out_fp){
         programa();
         if(current_token != NULL){
             print_warning(out_file, "Unexpected token after program ending.", *current_token);
+            FREE_TOKEN(current_token);
         }
     }
     print_final_message(out_file);
@@ -65,24 +66,23 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
         if(current_token != NULL && current_token->is_error){
             print_error(out_file, current_token->type, *current_token);
             while(current_token != NULL){
+                FREE_TOKEN(tok_buff);
                 if(part_of(current_token->type, immediate_tokens)) {
-                    FREE_TOKEN(tok_buff);
                     return IMMEDIATE;
                 }
                 if(part_of(current_token->type, parent_tokens)) {
-                    FREE_TOKEN(tok_buff);
                     return PARENT;
                 }
 
-                Token* tok_buff = current_token;
+                tok_buff = current_token;
                 current_token = get_next_token(token_stream);
-                FREE_TOKEN(tok_buff);
             }
         }
 
         if (strcmp(comp_type, PERIOD) && current_token == NULL) {
             print_error(out_file, "Program ended unexpectedly", *tok_buff);
             print_final_message(out_file);
+            FREE_TOKEN(tok_buff);
             exit(EXIT_FAILURE);
         }
 
@@ -101,6 +101,7 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
             if(part_of(current_token->type, parent_tokens))
                 return PARENT;
 
+            FREE_TOKEN(current_token);
             current_token = get_next_token(token_stream);
             if(current_token != NULL && current_token->is_error)
                 print_error(out_file, current_token->type, *current_token);
