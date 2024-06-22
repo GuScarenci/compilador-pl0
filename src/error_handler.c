@@ -102,6 +102,7 @@ void print_final_message(FILE* out_file){
         fprintf(out_file, "\nCompilation failed with ");
         fprintf(out_file, ANSI_COLOR_RED);
         fprintf(out_file, "%ld errors", error_count);
+        fprintf(out_file, ANSI_COLOR_RESET);
 
         if(warning_count == 0){
             fprintf(out_file, "!\n");
@@ -112,5 +113,4 @@ void print_final_message(FILE* out_file){
             fprintf(out_file, "%ld warnings\n", warning_count);
         }
     }
-    fprintf(out_file, ANSI_COLOR_RESET);
 }
