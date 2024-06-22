@@ -1,4 +1,8 @@
 {
     "liveshare.allowGuestDebugControl": true,
-    "liveshare.allowGuestTaskControl": true
+    "liveshare.allowGuestTaskControl": true,
+    "files.associations": {
+        "rdp.h": "c",
+        "string.h": "c"
+    }
 }

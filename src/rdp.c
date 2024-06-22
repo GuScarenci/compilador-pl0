@@ -21,6 +21,7 @@
 #include "lexer.h"
 #include "rdp.h"
 #include "error_handler.h"
+#include "token_labels.h"
 
 static TokStream* token_stream;
 static Token* current_token = NULL;
@@ -95,19 +96,19 @@ void programa(){
     SyncTokens parent_tokens = {0, NULL};
     SyncTokens immediate_tokens = {0, NULL};
     bloco();
-    MATCH(FIELD_TYPE, "period", "Expected a period at the end of the program");
+    MATCH(FIELD_TYPE, PERIOD, "Expected a period at the end of the program");
     //epsilon
 }
 
 void bloco(){
-    //sync_tokens = {"period", "semicolon"};
+    //sync_tokens = {PERIOD, SEMICOLON};
     declaracao();
     comando();
     //epsilon
 }
 
 void declaracao(){
-    //sync_tokens = {"keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon"}
+    //sync_tokens = {KW_CALL, KW_BEGIN, KW_IF, IDENT, KW_WHILE, PERIOD, SEMICOLON}
     constante();
     variavel();
     procedimento();
@@ -115,46 +116,46 @@ void declaracao(){
 }
 
 void constante(){
-    SyncTokens parent_tokens = {9, (char*[]){"keyword_var", "keyword_proc", "keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon"}};
+    SyncTokens parent_tokens = {9, (char*[]){KW_VAR, KW_PROC, KW_CALL, KW_BEGIN, KW_IF, IDENT, KW_WHILE, PERIOD, SEMICOLON}};
     SyncTokens immediate_tokens = {0, NULL};
     
-    if(!strcmp(current_token->type, "keyword_const")){
-        immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        MATCH(FIELD_TYPE, "keyword_const", "Expected CONST declaration");
+    if(!strcmp(current_token->type, KW_CONST)){
+        immediate_tokens = (SyncTokens){1, (char*[]){IDENT}};
+        MATCH(FIELD_TYPE, KW_CONST, "Expected CONST declaration");
 
-        immediate_tokens = (SyncTokens){1, (char*[]){"rel_op"}};
-        MATCH(FIELD_TYPE, "identifier", "Expected identifier in CONST declaration");
+        immediate_tokens = (SyncTokens){1, (char*[]){RELOP}};
+        MATCH(FIELD_TYPE, IDENT, "Expected identifier in CONST declaration");
 
-        immediate_tokens = (SyncTokens){1, (char*[]){"integer_literal"}};
+        immediate_tokens = (SyncTokens){1, (char*[]){INT}};
         MATCH(FIELD_STR, "=", "Use '=' for CONST assignment");
 
-        immediate_tokens = (SyncTokens){2, (char*[]){"semicolon", "comma"}};
-        MATCH(FIELD_TYPE, "integer_literal", "Expected number after '=' in CONST declaration");
+        immediate_tokens = (SyncTokens){2, (char*[]){SEMICOLON, COMMA}};
+        MATCH(FIELD_TYPE, INT, "Expected number after '=' in CONST declaration");
 
         mais_const();
 
         immediate_tokens = (SyncTokens){0, NULL};
-        MATCH(FIELD_TYPE, "semicolon", "Missing ';'");
+        MATCH(FIELD_TYPE, SEMICOLON, "Missing ';'");
     }
     //epsilon
 }
 
 void mais_const(){
-    SyncTokens parent_tokens = {1, (char*[]){"semicolon"}};
+    SyncTokens parent_tokens = {1, (char*[]){SEMICOLON}};
     SyncTokens immediate_tokens = {0, NULL};
 
-    if(!strcmp(current_token->type,"comma")){
-        immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        MATCH(FIELD_TYPE, "comma", "Expected ',' in CONST declaration");
+    if(!strcmp(current_token->type,COMMA)){
+        immediate_tokens = (SyncTokens){1, (char*[]){IDENT}};
+        MATCH(FIELD_TYPE, COMMA, "Expected ',' in CONST declaration");
 
-        immediate_tokens = (SyncTokens){1, (char*[]){"rel_op"}};
-        MATCH(FIELD_TYPE, "identifier", "Expected identifier after ',' in CONST declaration");
+        immediate_tokens = (SyncTokens){1, (char*[]){RELOP}};
+        MATCH(FIELD_TYPE, IDENT, "Expected identifier after ',' in CONST declaration");
 
-        immediate_tokens = (SyncTokens){1, (char*[]){"integer_literal"}};
+        immediate_tokens = (SyncTokens){1, (char*[]){INT}};
         MATCH(FIELD_STR, "=", "Use '=' for CONST assignment");
 
-        immediate_tokens = (SyncTokens){2, (char*[]){"semicolon", "comma"}};
-        MATCH(FIELD_TYPE, "integer_literal", "Expected number after '=' in CONST declaration");
+        immediate_tokens = (SyncTokens){2, (char*[]){SEMICOLON, COMMA}};
+        MATCH(FIELD_TYPE, INT, "Expected number after '=' in CONST declaration");
 
         mais_const();
     }
@@ -162,34 +163,34 @@ void mais_const(){
 }
 
 void variavel(){
-    SyncTokens parent_tokens = {8, (char*[]){"keyword_proc", "keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon"}};
+    SyncTokens parent_tokens = {8, (char*[]){KW_PROC, KW_CALL, KW_BEGIN, KW_IF, IDENT, KW_WHILE, PERIOD, SEMICOLON}};
     SyncTokens immediate_tokens = {0, NULL};
 
-    if(!strcmp(current_token->type, "keyword_var")){
-        immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        MATCH(FIELD_TYPE, "keyword_var", "Expected VAR declaration");
+    if(!strcmp(current_token->type, KW_VAR)){
+        immediate_tokens = (SyncTokens){1, (char*[]){IDENT}};
+        MATCH(FIELD_TYPE, KW_VAR, "Expected VAR declaration");
 
-        immediate_tokens = (SyncTokens){2, (char*[]){"comma", "semicolon"}};
-        MATCH(FIELD_TYPE, "identifier", "Expected identifier in VAR declaration");
+        immediate_tokens = (SyncTokens){2, (char*[]){COMMA, SEMICOLON}};
+        MATCH(FIELD_TYPE, IDENT, "Expected identifier in VAR declaration");
 
         mais_var();
 
         immediate_tokens = (SyncTokens){0, NULL};
-        MATCH(FIELD_TYPE, "semicolon", "Missing ';'");
+        MATCH(FIELD_TYPE, SEMICOLON, "Missing ';'");
     }
     //epsilon
 }
 
 void mais_var(){
-    SyncTokens parent_tokens = {1, (char*[]){"semicolon"}};
+    SyncTokens parent_tokens = {1, (char*[]){SEMICOLON}};
     SyncTokens immediate_tokens = {0, NULL};
 
-    if(!strcmp(current_token->type,"comma")){
-        immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        MATCH(FIELD_TYPE, "comma", "Expected ',' in VAR declaration");
+    if(!strcmp(current_token->type,COMMA)){
+        immediate_tokens = (SyncTokens){1, (char*[]){IDENT}};
+        MATCH(FIELD_TYPE, COMMA, "Expected ',' in VAR declaration");
 
-        immediate_tokens = (SyncTokens){2, (char*[]){"comma", "semicolon"}};
-        MATCH(FIELD_TYPE, "identifier", "Expected identifier after ',' in VAR declaration");
+        immediate_tokens = (SyncTokens){2, (char*[]){COMMA, SEMICOLON}};
+        MATCH(FIELD_TYPE, IDENT, "Expected identifier after ',' in VAR declaration");
 
         mais_var();
     }
@@ -198,23 +199,23 @@ void mais_var(){
 
 
 void procedimento(){
-    SyncTokens parent_tokens = {8, (char*[]){"keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon", "keyword_proc"}};
+    SyncTokens parent_tokens = {8, (char*[]){KW_CALL, KW_BEGIN, KW_IF, IDENT, KW_WHILE, PERIOD, SEMICOLON, KW_PROC}};
     SyncTokens immediate_tokens = {0, NULL};
 
-    if(!strcmp(current_token->type, "keyword_proc")){
-        immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        MATCH(FIELD_TYPE, "keyword_proc", "Expected PROCEDURE declaration");
+    if(!strcmp(current_token->type, KW_PROC)){
+        immediate_tokens = (SyncTokens){1, (char*[]){IDENT}};
+        MATCH(FIELD_TYPE, KW_PROC, "Expected PROCEDURE declaration");
 
-        immediate_tokens = (SyncTokens){1, (char*[]){"semicolon"}};
-        MATCH(FIELD_TYPE, "identifier", "Expected identifier in PROCEDURE declaration");
+        immediate_tokens = (SyncTokens){1, (char*[]){SEMICOLON}};
+        MATCH(FIELD_TYPE, IDENT, "Expected identifier in PROCEDURE declaration");
 
-        immediate_tokens = (SyncTokens){9, (char*[]){"keyword_const", "keyword_var", "keyword_proc", "identifier", "keyword_call", "keyword_begin", "keyword_if", "keyword_while", "semicolon"}};
-        MATCH(FIELD_TYPE, "semicolon", "Missing ';'");
+        immediate_tokens = (SyncTokens){9, (char*[]){KW_CONST, KW_VAR, KW_PROC, IDENT, KW_CALL, KW_BEGIN, KW_IF, KW_WHILE, SEMICOLON}};
+        MATCH(FIELD_TYPE, SEMICOLON, "Missing ';'");
 
         bloco();
 
-        immediate_tokens = (SyncTokens){8, (char*[]){"keyword_proc","keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while", "period", "semicolon"}};
-        MATCH(FIELD_TYPE, "semicolon", "Missing ';'");
+        immediate_tokens = (SyncTokens){8, (char*[]){KW_PROC,KW_CALL, KW_BEGIN, KW_IF, IDENT, KW_WHILE, PERIOD, SEMICOLON}};
+        MATCH(FIELD_TYPE, SEMICOLON, "Missing ';'");
 
         procedimento();
     }
@@ -222,50 +223,50 @@ void procedimento(){
 }
 
 void comando(){
-    SyncTokens parent_tokens = {3, (char*[]){"keyword_end", "period", "semicolon"}};
+    SyncTokens parent_tokens = {3, (char*[]){KW_END, PERIOD, SEMICOLON}};
     SyncTokens immediate_tokens = {0, NULL};
 
-    if(!strcmp(current_token->type, "identifier")){
+    if(!strcmp(current_token->type, IDENT)){
         immediate_tokens = (SyncTokens){1, (char*[]){"assign_op"}};
-        MATCH(FIELD_TYPE, "identifier", "Expected identifier in COMMAND");
+        MATCH(FIELD_TYPE, IDENT, "Expected identifier in COMMAND");
 
-        immediate_tokens = (SyncTokens){5, (char*[]){"identifier", "integer_literal", "left_par", "simb_plus", "simb_minus"}};
+        immediate_tokens = (SyncTokens){5, (char*[]){IDENT, INT, LEFTPAR, PLUS, MINUS}};
         MATCH(FIELD_STR, ":=", "Use ':=' for assignment");
 
         expressao();
-    } else if (!strcmp(current_token->type, "keyword_call")){
-        immediate_tokens = (SyncTokens){1, (char*[]){"identifier"}};
-        MATCH(FIELD_TYPE, "keyword_call", "Expected CALL");
+    } else if (!strcmp(current_token->type, KW_CALL)){
+        immediate_tokens = (SyncTokens){1, (char*[]){IDENT}};
+        MATCH(FIELD_TYPE, KW_CALL, "Expected CALL");
 
         immediate_tokens = (SyncTokens){0, NULL};
-        MATCH(FIELD_TYPE, "identifier", "Expected identifier after CALL");
-    } else if (!strcmp(current_token->type, "keyword_begin")){ //BEGIN
-        immediate_tokens = (SyncTokens){5, (char*[]){"keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while"}};
-        MATCH(FIELD_TYPE, "keyword_begin", "Expected BEGIN");
+        MATCH(FIELD_TYPE, IDENT, "Expected identifier after CALL");
+    } else if (!strcmp(current_token->type, KW_BEGIN)){ //BEGIN
+        immediate_tokens = (SyncTokens){5, (char*[]){KW_CALL, KW_BEGIN, KW_IF, IDENT, KW_WHILE}};
+        MATCH(FIELD_TYPE, KW_BEGIN, "Expected BEGIN");
 
         comando();
         mais_cmd();
 
         immediate_tokens = (SyncTokens){0, NULL};
-        MATCH(FIELD_TYPE, "keyword_end", "Expected END in BEGIN");
-    } else if (!strcmp(current_token->type, "keyword_if")){ //IF
-        immediate_tokens = (SyncTokens){6, (char*[]){"keyword_odd", "identifier", "integer_literal", "left_par", "simb_plus", "simb_minus"}};
-        MATCH(FIELD_TYPE, "keyword_if", "Expected IF");
+        MATCH(FIELD_TYPE, KW_END, "Expected END in BEGIN");
+    } else if (!strcmp(current_token->type, KW_IF)){ //IF
+        immediate_tokens = (SyncTokens){6, (char*[]){"keyword_odd", IDENT, INT, LEFTPAR, PLUS, MINUS}};
+        MATCH(FIELD_TYPE, KW_IF, "Expected IF");
 
         condicao();
 
-        immediate_tokens = (SyncTokens){5, (char*[]){"keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while"}};
-        MATCH(FIELD_TYPE, "keyword_then", "Expected a THEN in IF condition");
+        immediate_tokens = (SyncTokens){5, (char*[]){KW_CALL, KW_BEGIN, KW_IF, IDENT, KW_WHILE}};
+        MATCH(FIELD_TYPE, KW_THEN, "Expected a THEN in IF condition");
 
         comando();
-    } else if (!strcmp(current_token->type, "keyword_while")){
-        immediate_tokens = (SyncTokens){6, (char*[]){"keyword_odd", "identifier", "integer_literal", "left_par", "simb_plus", "simb_minus"}};
-        MATCH(FIELD_TYPE, "keyword_while", "Expected WHILE");
+    } else if (!strcmp(current_token->type, KW_WHILE)){
+        immediate_tokens = (SyncTokens){6, (char*[]){"keyword_odd", IDENT, INT, LEFTPAR, PLUS, MINUS}};
+        MATCH(FIELD_TYPE, KW_WHILE, "Expected KW_WHILE");
 
         condicao();
 
-        immediate_tokens = (SyncTokens){5, (char*[]){"keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while"}};
-        MATCH(FIELD_TYPE, "keyword_do", "Expected a DO in WHILE condition");
+        immediate_tokens = (SyncTokens){5, (char*[]){KW_CALL, KW_BEGIN, KW_IF, IDENT, KW_WHILE}};
+        MATCH(FIELD_TYPE, KW_DO, "Expected a DO in KW_WHILE condition");
 
         comando();
     }
@@ -273,12 +274,12 @@ void comando(){
 }
 
 void mais_cmd(){
-    SyncTokens parent_tokens = {2, (char*[]){"keyword_end", "semicolon"}};
+    SyncTokens parent_tokens = {2, (char*[]){KW_END, SEMICOLON}};
     SyncTokens immediate_tokens = {0, NULL};
 
-    if(!strcmp(current_token->type, "semicolon")){
-        immediate_tokens = (SyncTokens){5, (char*[]){"keyword_call", "keyword_begin", "keyword_if", "identifier", "keyword_while"}};
-        MATCH(FIELD_TYPE, "semicolon", "Missing ';");
+    if(!strcmp(current_token->type, SEMICOLON)){
+        immediate_tokens = (SyncTokens){5, (char*[]){KW_CALL, KW_BEGIN, KW_IF, IDENT, KW_WHILE}};
+        MATCH(FIELD_TYPE, SEMICOLON, "Missing ';");
 
         comando();
 
@@ -294,13 +295,13 @@ void expressao(){
 }
 
 void operador_unario(){
-    SyncTokens parent_tokens = {5, (char*[]){"identifier", "integer_literal", "left_par"}};
+    SyncTokens parent_tokens = {5, (char*[]){IDENT, INT, LEFTPAR}};
     SyncTokens immediate_tokens = {0, NULL};
     
-    if(!strcmp(current_token->type, "simb_plus")){
-        MATCH(FIELD_TYPE, "simb_plus", "Expected '+'");
-    }else if(!strcmp(current_token->type, "simb_minus")){
-        MATCH(FIELD_TYPE, "simb_minus", "Expected '-'");
+    if(!strcmp(current_token->type, PLUS)){
+        MATCH(FIELD_TYPE, PLUS, "Expected '+'");
+    }else if(!strcmp(current_token->type, MINUS)){
+        MATCH(FIELD_TYPE, MINUS, "Expected '-'");
     }
     //epsilon
 }
@@ -311,19 +312,19 @@ void termo(){
 }
 
 void mais_termos(){
-    SyncTokens parent_tokens = {7, (char*[]){"semicolon", "keyword_end", "period", "right_par", "rel_op", "keyword_then", "keyword_do"}};
+    SyncTokens parent_tokens = {7, (char*[]){SEMICOLON, KW_END, PERIOD, RIGHTPAR, RELOP, KW_THEN, KW_DO}};
     SyncTokens immediate_tokens = {0, NULL};
 
-    if(!strcmp(current_token->type, "simb_plus")){
-        immediate_tokens = (SyncTokens){3, (char*[]){"identifier", "integer_literal", "left_par"}};
-        MATCH(FIELD_TYPE, "simb_plus", "Expected '+'");
+    if(!strcmp(current_token->type, PLUS)){
+        immediate_tokens = (SyncTokens){3, (char*[]){IDENT, INT, LEFTPAR}};
+        MATCH(FIELD_TYPE, PLUS, "Expected '+'");
 
         termo();
         
         mais_termos();
-    } else if(!strcmp(current_token->type, "simb_minus")){
-        immediate_tokens = (SyncTokens){3, (char*[]){"identifier", "integer_literal", "left_par"}};
-        MATCH(FIELD_TYPE, "simb_minus", "Expected '-'");
+    } else if(!strcmp(current_token->type, MINUS)){
+        immediate_tokens = (SyncTokens){3, (char*[]){IDENT, INT, LEFTPAR}};
+        MATCH(FIELD_TYPE, MINUS, "Expected '-'");
 
         termo();
         mais_termos();
@@ -332,37 +333,37 @@ void mais_termos(){
 }
 
 void fator(){
-    SyncTokens parent_tokens = {11, (char*[]){"simb_mult", "simb_div", "simb_minus", "simb_plus", "semicolon", "keyword_end", "period", "right_par", "rel_op", "keyword_then", "keyword_do"}};
+    SyncTokens parent_tokens = {11, (char*[]){MULT, DIV, MINUS, PLUS, SEMICOLON, KW_END, PERIOD, RIGHTPAR, RELOP, KW_THEN, KW_DO}};
     SyncTokens immediate_tokens = {0, NULL};
 
-    if(!strcmp(current_token->type, "identifier")){
-        MATCH(FIELD_TYPE, "identifier", "Expected identifier in factor");
-    }else if(!strcmp(current_token->type, "integer_literal")){
-        MATCH(FIELD_TYPE, "integer_literal", "Expected number in factor");
-    }else if(!strcmp(current_token->type, "left_par")){
-        immediate_tokens = (SyncTokens){5, (char*[]){"identifier", "integer_literal", "left_par", "simb_plus", "simb_minus"}};
-        MATCH(FIELD_TYPE, "left_par", "Expected opening parenthesis in expression");
+    if(!strcmp(current_token->type, IDENT)){
+        MATCH(FIELD_TYPE, IDENT, "Expected identifier in factor");
+    }else if(!strcmp(current_token->type, INT)){
+        MATCH(FIELD_TYPE, INT, "Expected number in factor");
+    }else if(!strcmp(current_token->type, LEFTPAR)){
+        immediate_tokens = (SyncTokens){5, (char*[]){IDENT, INT, LEFTPAR, PLUS, MINUS}};
+        MATCH(FIELD_TYPE, LEFTPAR, "Expected opening parenthesis in expression");
 
         expressao();
 
         immediate_tokens = (SyncTokens){0, NULL};
-        MATCH(FIELD_TYPE, "right_par", "Missing closing parenthesis in expression");
+        MATCH(FIELD_TYPE, RIGHTPAR, "Missing closing parenthesis in expression");
     }else{
         print_error(out_file, "Expected identifier, number or expression", *current_token);
     }
 }
 
 void mais_fatores(){
-    SyncTokens parent_tokens = {9, (char*[]){"simb_minus", "simb_plus", "semicolon", "keyword_end", "period", "right_par", "rel_op", "keyword_then", "keyword_do"}};
+    SyncTokens parent_tokens = {9, (char*[]){MINUS, PLUS, SEMICOLON, KW_END, PERIOD, RIGHTPAR, RELOP, KW_THEN, KW_DO}};
     SyncTokens immediate_tokens = {0, NULL};
-    if(!strcmp(current_token->type, "simb_mult")){
-        immediate_tokens = (SyncTokens){5, (char*[]){"identifier", "integer_literal", "left_par", "simb_plus", "simb_minus"}};
-        MATCH(FIELD_TYPE, "simb_mult", "Expected multiply operator");
+    if(!strcmp(current_token->type, MULT)){
+        immediate_tokens = (SyncTokens){5, (char*[]){IDENT, INT, LEFTPAR, PLUS, MINUS}};
+        MATCH(FIELD_TYPE, MULT, "Expected multiply operator");
         fator();
         mais_fatores();
-    }else if(!strcmp(current_token->type, "simb_div")){
-        immediate_tokens = (SyncTokens){5, (char*[]){"identifier", "integer_literal", "left_par", "simb_plus", "simb_minus"}};
-        MATCH(FIELD_TYPE, "simb_div", "Expected divide operator");
+    }else if(!strcmp(current_token->type, DIV)){
+        immediate_tokens = (SyncTokens){5, (char*[]){IDENT, INT, LEFTPAR, PLUS, MINUS}};
+        MATCH(FIELD_TYPE, DIV, "Expected divide operator");
         fator();
         mais_fatores();
     }
@@ -370,7 +371,7 @@ void mais_fatores(){
 }
 
 void condicao(){
-    SyncTokens parent_tokens = {3, (char*[]){"keyword_then", "keyword_do"}};
+    SyncTokens parent_tokens = {3, (char*[]){KW_THEN, KW_DO}};
     SyncTokens immediate_tokens = {0, NULL};
     if(!strcmp(current_token->type, "keyword_odd")){
         MATCH(FIELD_TYPE, "keyword_odd", "Expected ODD keyword");
@@ -383,10 +384,10 @@ void condicao(){
 }
 
 void relacional(){
-    SyncTokens parent_tokens = {3, (char*[]){"simb_plus", "simb_minus", "identifier", "integer_literal","left_par"}};
+    SyncTokens parent_tokens = {3, (char*[]){PLUS, MINUS, IDENT, INT,LEFTPAR}};
     SyncTokens immediate_tokens = {0, NULL};
-    if(!strcmp(current_token->type, "rel_op")){
-        MATCH(FIELD_TYPE, "rel_op", "Expected a relational operator");
+    if(!strcmp(current_token->type, RELOP)){
+        MATCH(FIELD_TYPE, RELOP, "Expected a relational operator");
     }else{
         print_error(out_file, "Expected a relational operator", *current_token);
     }
