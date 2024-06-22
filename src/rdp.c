@@ -59,6 +59,7 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
         match_expected = !strcmp(current_token->token_str, comp_type);
 
     if(match_expected){
+        Token* tok_buff = current_token;
         current_token = get_next_token(token_stream);
 
         if(current_token != NULL && current_token->is_error){
@@ -71,6 +72,13 @@ int match_function(int field, char* comp_type, char *error_msg, SyncTokens immed
             }
         }
 
+        if (strcmp(comp_type, PERIOD) && current_token == NULL) {
+            print_error(out_file, "Program ended unexpectedly", *tok_buff);
+            print_final_message(out_file);
+            exit(EXIT_FAILURE);
+        }
+
+        free(tok_buff);
         return SUCCESS;
     } else{
         print_error(out_file, error_msg, *current_token);
