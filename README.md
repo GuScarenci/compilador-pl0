@@ -6,7 +6,7 @@ Esse projeto, juntamente com toda sua documentação, foi feito para a disciplin
 - Gustavo Moura Scarenci de Carvalho Ferreira. NUSP: 12547792.
 - Matheus Henrique Dias Cirillo. NUSP: 12547750.
 
-Por enquanto, apenas o analisador léxico (a primeira etapa do compilador) está implementada.
+Por enquanto, apenas o analisador sintático (a segunda etapa do compilador) está implementada.
 ## Como Compilar e Executar
 Para compilar o código, basta chamar a diretiva `all` do `Makefile`:
 ```
