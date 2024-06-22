@@ -1,3 +1,9 @@
-CONST john = 5;
+CONST john := 57;
 .
 CONST john = 5;
+VAR paul = 32;
+PROCEDURE castanon;
+VAR x, y, z;
+BEGIN
+    x := y + z;
+END.
