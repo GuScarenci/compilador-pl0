@@ -112,4 +112,5 @@ void print_final_message(FILE* out_file){
             fprintf(out_file, "%ld warnings\n", warning_count);
         }
     }
+    fprintf(out_file, ANSI_COLOR_RESET);
 }
