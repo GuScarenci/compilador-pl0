@@ -39,13 +39,9 @@
 #define MATCH(field_type, str, error_message)                                              \
     do {                                                                                   \
         int32_t result = match_function(field_type, str, error_message, immediate_tokens, parent_tokens); \
-        if(result != SUCCESS) {                                                            \
-            if(result == PARENT || result == SYNC_ERROR) {                                 \
-                return;                                                                    \
-            }                                                                              \
-        }                                                                                  \
+        if(result == PARENT) return;                                                       \
+        if(result == SYNC_ERROR) exit(-1);                                                 \
     } while(false) //this is a way to avoid result redefinition
-
 
 typedef struct sync_tokens {
     size_t num_tokens;
