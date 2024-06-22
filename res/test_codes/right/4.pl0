@@ -1,0 +1,11 @@
+VAR x, sum;
+
+BEGIN
+    x := 1;
+    sum := 0;
+    WHILE x <= 10 DO
+    BEGIN
+        sum := sum + x;
+        x := x + 1
+    END
+END.

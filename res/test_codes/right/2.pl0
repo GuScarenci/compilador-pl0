@@ -1,0 +1,13 @@
+PROCEDURE Increment;
+VAR a;
+
+BEGIN
+    a := a + 1;
+END;
+
+VAR x;
+
+BEGIN
+    x := 5;
+    CALL Increment;
+END.

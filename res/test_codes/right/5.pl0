@@ -1,0 +1,8 @@
+CONST max = 100;
+
+VAR x;
+
+BEGIN
+    x := max;
+    x := x + 1;
+END.
