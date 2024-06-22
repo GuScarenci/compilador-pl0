@@ -70,7 +70,6 @@ char* read_line_from_file(const char* filename, size_t line_number) {
     return NULL;
 }
 
-// Function to print a line with a specified segment in red
 void print_line_with_highlight(const char* line, size_t start_char, size_t length) {
     size_t line_len = strlen(line);
     for (size_t i = 0; i < line_len; i++) {
@@ -95,6 +94,14 @@ void rdp(TokStream* b, FILE* out_fp){
     }else{
         ErrorListNode *current = error_list.first_error;
         while(current != NULL){
+            printf("%s:%ld:%ld:", token_stream->source_path, current->error_line, current->token_start_pos);
+            printf(ANSI_COLOR_RED);
+            printf(" error: ");
+            printf(ANSI_COLOR_RESET);
+            printf("%s\n", current->error_message);
+
+            printf(ANSI_COLOR_RESET); // Ensure the reset code is printed at the beginning
+            printf("\t%ld | ", current->error_line);
             char *source_path = token_stream->source_path;
             char* line = read_line_from_file(source_path, current->error_line);
             print_line_with_highlight(line, current->token_start_pos, current->token_size);
