@@ -1,5 +1,5 @@
 # Compilador de PL-0
-Esse projeto, juntamente com toda sua documentação, foi feito para a disciplina SCC0605 - Teoria da Computação e Compiladores. Os integrantes do grupo são:
+Esse projeto foi feito para a disciplina SCC0605 - Teoria da Computação e Compiladores. Os integrantes do grupo são:
 - Artur Brenner Weber. NUSP: 12675451.
 - Gabriel Franceschi Libardi. NUSP: 11760739.
 - Guilherme Castanon Silva Pereira. NUSP: 11801140.
