@@ -17,9 +17,9 @@ Para executar o código, basta chamar a diretiva `run` do `Makefile` e passar o 
 make run ARGS="<source_file> <output_file>"
 ```
 
-em que <source_file> é o caminho para o código fonte (que é um arquivo de texto) e <output_file> é a saída pedida com mensagens de sucesso ou erro de compilação, com os erros de compilação de uma maneira amigável e informativa caso haja erro no programa. A execução do programa sobrescreve todo o conteúdo de <output_file> com a saída do *parser*. A diretiva `run` também compila automaticamente o código se o executável não foi encontrado. 
+em que <source_file> é o caminho para o código fonte (que é um arquivo de texto), e <output_file> é a saída pedida com as mensagens de sucesso ou de erro de compilação. A execução do programa sobrescreve todo o conteúdo de <output_file> com a saída do *parser*. A diretiva `run` também compila automaticamente o código se o executável não foi encontrado. Procurou-se imprimir erros de compilação amigáveis e informativos caso haja erro no programa PL/0 de entrada.
 
-Para a melhor saída de erros, é recomendado que a saída seja o terminal `stdout` ou que ao jogar para a saída para um arquivo de texto, se faça um `cat`do arquivo para o terminal. Visto que a saída do programa faz destaque de erros e warnings com cores.
+Para a melhor vizualização da saída de erros, é recomendado que a saída seja o terminal `stdout`. De forma alternativa, se deseja-se jogar a saída para um arquivo de texto, recomenda-se fazer um `cat`do arquivo para o terminal para a vizualização da saída. Visto que a saída do programa faz destaque de erros e warnings com cores.
 
 ## #TODO List
 - [x] Analisador Léxico.
