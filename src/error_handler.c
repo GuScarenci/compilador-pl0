@@ -125,10 +125,11 @@ void print_final_message(FILE* out_file){
         if(warning_count == 0){
             fprintf(out_file, "!\n");
         } else {
-            fprintf(out_file, ANSI_COLOR_RESET);
             fprintf(out_file, " and ");
             fprintf(out_file, ANSI_COLOR_YELLOW);
-            fprintf(out_file, "%ld warnings\n", warning_count);
+            fprintf(out_file, "%ld warnings", warning_count);
+            fprintf(out_file, ANSI_COLOR_RESET);
+            fprintf(out_file, ".\n");
         }
     }
 }
