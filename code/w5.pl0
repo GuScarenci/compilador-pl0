@@ -1,6 +1,6 @@
 VAR n, fat;
 BGIN {erro em palavra chave}
-	n:=4;
+	n:=4; {devido ao erro anterior acontece avalanche}
 	{erro em identificador de variável}
 	f@t:=1;
 	{erro operador relacional}
