@@ -31,7 +31,7 @@ Para a melhor vizualização da saída de erros, é recomendado que a saída sej
 
 #### Estrutura de Pastas
 Todo o seu código deve ser colocado dentro da pasta _src/_ e você pode criar qualquer número de diretórios necessários dentro dela.
-Você também pode criar pastas como _res/_, _scripts/_ na pasta raiz para auxiliar. Exemplos de código para teste estão no diretório _code/_, e os seus nomes seguem a convenção de _code/r\[numero\].pl0_ serem códigos válidos, e _code\[numero\].pl0_ serem programas inválidos.
+Você também pode criar pastas como _res/_, _scripts/_ na pasta raiz para auxiliar. Exemplos de código para teste estão no diretório _tests/_, e os seus nomes seguem a convenção de _tests/r\[numero\].pl0_ serem códigos válidos, e _tests\[numero\].pl0_ serem programas inválidos.
 
 #### Depuração
 Para usar os recursos de depuração que este espaço de trabalho fornece, você precisa instalar a [extensão C/C++ da Microsoft](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools).
