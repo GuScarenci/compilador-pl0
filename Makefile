@@ -43,7 +43,7 @@ clean:
 	@rm -rf out/*.csv
 
 zip: clean
-	$(ZIP) a $(ZIPFILE) ./include/* ./src/* ./res/*.csv ./res/*.pl0 ./res/*.drawio ./Makefile ./README.md ./*.pdf
+	$(ZIP) trabalho $(ZIPFILE) ./tests/* ./include/* ./src/* ./res/*.csv ./res/*.pl0 ./res/*.drawio ./Makefile ./README.md ./*.pdf
 
 run: $(EXECUTABLE)
 	@./$(EXECUTABLE) $(ARGS)
